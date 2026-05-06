@@ -26,19 +26,19 @@ export function renderProjects(projects, container) {
 }
 
 /**
- * Fetches project data from a JSON file and renders it into the grid.
+ * Fetches project data from the backend API and renders it into the grid.
  * @param {string} gridId - ID of the container element
- * @param {string} dataUrl - URL of the JSON data file
+ * @param {string} apiBase - Base URL of the backend API
  */
 export async function loadProjects(
     gridId = 'projects-grid',
-    dataUrl = 'data/portfolio.json'
+    apiBase = ''
 ) {
     const grid = document.getElementById(gridId);
     if (!grid) return;
 
     try {
-        const res = await fetch(dataUrl);
+        const res = await fetch(`${apiBase}/api/projects`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         renderProjects(data.projects, grid);

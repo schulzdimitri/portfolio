@@ -7,6 +7,6 @@ const API_BASE = document.querySelector('meta[name="api-base"]')?.content
 
 document.addEventListener('DOMContentLoaded', () => {
     initTabs();
-    loadProjects();
+    loadProjects('projects-grid', API_BASE);
     initContactForm(API_BASE);
 });
