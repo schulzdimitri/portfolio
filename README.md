@@ -4,7 +4,7 @@
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![DigitalOcean](https://img.shields.io/badge/DigitalOcean-%23008bcf.svg?style=for-the-badge&logo=digitalOcean&logoColor=white)
+![DigitalOcean](https://img.shields.io/badge/DigitalOcean-%23008bcf.svg?style=for-the-badge&logo=digitalocean&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
 A modernized, full-stack personal portfolio. What started as a static HTML/JS site has evolved into a robust decoupled application featuring a Vanilla JavaScript frontend and a resilient Golang backend powered by SQLite.
