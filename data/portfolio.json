@@ -1,0 +1,51 @@
+{
+  "personal": {
+    "name": "Dimitri Schulz Amado",
+    "greeting": "Oi! Eu sou o",
+    "subtitle_highlighted": ["Sistemas", "código"],
+    "subtitle_full": "são o propósito e é o combustível. 🚀",
+    "email": "contact@example.com",
+    "github": "https://github.com/schulzdimitrii",
+    "linkedin": "https://linkedin.com/in/schulzdimitrii",
+    "profile_pic": "img/profile.jpg",
+    "about_pic": "img/about.jpg"
+  },
+  "about": [
+    "Tenho anos de experiência construindo sistemas escaláveis como <span class=\"highlight\">Engenheiro de Software Backend</span>, trabalhando para empresas com alta demanda de processamento.",
+    "Sou <span class=\"highlight\">apaixonado</span> por arquitetura de software e busco sempre a melhor performance e clean code.",
+    "Meu stack principal foca fortemente no ecossistema <span class=\"highlight\">Python, Java e Golang</span>.",
+    "Atualmente estou focando em otimizar infraestruturas em nuvem e construindo microserviços de alta performance."
+  ],
+  "experience": [
+    {
+      "id": "job1",
+      "company": "Tech Company A",
+      "role": "Backend Engineer",
+      "period": "MAI 2024 - PRESENTE",
+      "duties": [
+        "Desenvolvi e mantive microserviços escaláveis utilizando Golang e gRPC, reduzindo a latência média em 40%.",
+        "Refatorei pipelines de dados em Python, aumentando o throughput de processamento para milhões de eventos diários."
+      ]
+    },
+    {
+      "id": "job2",
+      "company": "Fintech Startup",
+      "role": "Software Engineer",
+      "period": "JAN 2022 - ABR 2024",
+      "duties": [
+        "Migrei o monolito legado construído em Java (Spring Boot) para uma arquitetura orientada a eventos usando Kafka.",
+        "Integração de APIs de pagamento de terceiros com alta disponibilidade e zero downtime."
+      ]
+    },
+    {
+      "id": "job3",
+      "company": "Global Bank",
+      "role": "Junior Developer",
+      "period": "FEV 2020 - DEZ 2021",
+      "duties": [
+        "Atuei na manutenção de serviços críticos financeiros em Java, garantindo compliance e segurança de dados.",
+        "Automatizei tarefas rotineiras de infraestrutura utilizando scripts em Python."
+      ]
+    }
+  ]
+}
