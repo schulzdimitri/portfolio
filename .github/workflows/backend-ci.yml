@@ -100,18 +100,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set lower case repository name
-        run: |
-          echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: backend
           push: true
           tags: |
-            ghcr.io/${{ env.REPO }}/backend:latest
-            ghcr.io/${{ env.REPO }}/backend:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
 
   # ── Job 5: Deploy to DigitalOcean Droplet (main only) ───────────────────────
   deploy:
@@ -120,10 +116,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Set lower case repository name
-        run: |
-          echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
-          
       - name: Deploy to Droplet via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -131,10 +123,9 @@ jobs:
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.DO_SSH_KEY }}
           password: ${{ secrets.DO_PASSWORD }}
-          envs: REPO
           script: |
             echo "Pulling latest image from GHCR..."
-            docker pull ghcr.io/$REPO/backend:latest
+            docker pull ghcr.io/${{ github.repository }}/backend:latest
             
             echo "Stopping existing container..."
             docker stop portfolio-backend || true
@@ -148,14 +139,8 @@ jobs:
               --name portfolio-backend \
               -p 8080:8080 \
               -v /root/portfolio-data:/app/data \
-              -e ALLOWED_ORIGIN="${{ secrets.ALLOWED_ORIGIN }}" \
-              -e SMTP_HOST="${{ secrets.SMTP_HOST }}" \
-              -e SMTP_PORT="${{ secrets.SMTP_PORT }}" \
-              -e SMTP_USER="${{ secrets.SMTP_USER }}" \
-              -e SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}" \
-              -e CONTACT_TO_EMAIL="${{ secrets.CONTACT_TO_EMAIL }}" \
               --restart unless-stopped \
-              ghcr.io/$REPO/backend:latest
+              ghcr.io/${{ github.repository }}/backend:latest
             
             echo "Cleanup old dangling images..."
             docker image prune -af

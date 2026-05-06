@@ -11,6 +11,7 @@ func TestSMTP_Send(t *testing.T) {
 	cfg := sender.SMTPConfig{
 		Host: "localhost",
 		Port: "25",
+		User: "fakeuser",
 	}
 	s := sender.NewSMTP(cfg)
 
