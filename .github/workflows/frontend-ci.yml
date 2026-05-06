@@ -35,11 +35,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install dependencies
+        working-directory: frontend
         run: npm ci
 
       - name: Run tests
+        working-directory: frontend
         run: npm test
 
   # ── Job 2: Build static artifact ────────────────────────────────────────────
@@ -51,15 +54,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Stage frontend files
+        working-directory: frontend
         run: |
           mkdir -p dist
           cp index.html dist/
           cp -r css dist/
           cp -r js dist/
-          cp -r img dist/
-          cp -r data dist/
+          cp -r img dist/ || true
+          cp -r data dist/ || true
 
       - name: Inject backend API URL
+        working-directory: frontend
         # Set BACKEND_URL as a repository variable (Settings → Variables → Actions)
         # e.g. https://portfolio-backend.fly.dev
         if: vars.BACKEND_URL != ''
@@ -72,7 +77,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: frontend/dist
 
   # ── Job 2: Deploy to GitHub Pages ───────────────────────────────────────────
   deploy:
