@@ -44,3 +44,28 @@ func (h *ProjectHandler) GetProjects(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Failed to encode projects response", "error", err)
 	}
 }
+
+func (h *ProjectHandler) CreateProject(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, `{"error": "method not allowed"}`, http.StatusMethodNotAllowed)
+		return
+	}
+
+	var p domain.Project
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		http.Error(w, `{"error": "invalid json payload"}`, http.StatusBadRequest)
+		return
+	}
+
+	if err := h.repo.Insert(&p); err != nil {
+		slog.Error("Failed to insert project", "error", err)
+		http.Error(w, `{"error": "failed to insert project"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		slog.Error("Failed to encode created project", "error", err)
+	}
+}

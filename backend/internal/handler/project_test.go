@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/schulzdimitri/portfolio/backend/internal/domain"
@@ -65,14 +66,37 @@ func TestGetProjects_MethodNotAllowed(t *testing.T) {
 	repo := &mockProjectRepo{}
 	h := handler.NewProjectHandler(repo)
 
-	req := httptest.NewRequest(http.MethodPost, "/api/projects", nil)
-	w := httptest.NewRecorder()
+	t.Run("POST Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPost, "/api/projects", nil)
+		w := httptest.NewRecorder()
 
-	h.GetProjects(w, req)
+		h.GetProjects(w, req)
 
-	if w.Code != http.StatusMethodNotAllowed {
-		t.Errorf("expected status 405, got %d", w.Code)
-	}
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected status 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("POST success", func(t *testing.T) {
+		payload := `{"title":"Test Project", "description":"A project", "github":"link", "tags":["go"]}`
+		req := httptest.NewRequest(http.MethodPost, "/api/projects", strings.NewReader(payload))
+		w := httptest.NewRecorder()
+
+		h.CreateProject(w, req)
+
+		if w.Code != http.StatusCreated {
+			t.Errorf("expected status 201, got %d", w.Code)
+		}
+
+		var resp domain.Project
+		if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+			t.Fatalf("failed to decode response: %v", err)
+		}
+
+		if resp.ID == 0 {
+			t.Errorf("expected ID to be set, got 0")
+		}
+	})
 }
 
 func TestGetProjects_RepoError(t *testing.T) {

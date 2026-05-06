@@ -32,3 +32,27 @@ func (h *ExperienceHandler) GetExperiences(w http.ResponseWriter, r *http.Reques
 		http.Error(w, "Failed to encode experiences", http.StatusInternalServerError)
 	}
 }
+
+func (h *ExperienceHandler) CreateExperience(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, `{"error": "method not allowed"}`, http.StatusMethodNotAllowed)
+		return
+	}
+
+	var exp domain.Experience
+	if err := json.NewDecoder(r.Body).Decode(&exp); err != nil {
+		http.Error(w, `{"error": "invalid json payload"}`, http.StatusBadRequest)
+		return
+	}
+
+	if err := h.repo.Insert(&exp); err != nil {
+		http.Error(w, `{"error": "failed to insert experience"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(exp); err != nil {
+		http.Error(w, "Failed to encode created experience", http.StatusInternalServerError)
+	}
+}
