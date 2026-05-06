@@ -121,11 +121,18 @@ jobs:
     steps:
       - name: Deploy to Droplet via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          CONTACT_TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.DO_SSH_KEY }}
           password: ${{ secrets.DO_PASSWORD }}
+          envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,CONTACT_TO_EMAIL
           script: |
             echo "Pulling latest image from GHCR..."
             docker pull ghcr.io/${{ github.repository }}/backend:latest
@@ -142,6 +149,11 @@ jobs:
               --name portfolio-backend \
               -p 8080:8080 \
               -v /root/portfolio-data:/app/data \
+              -e SMTP_HOST="$SMTP_HOST" \
+              -e SMTP_PORT="$SMTP_PORT" \
+              -e SMTP_USER="$SMTP_USER" \
+              -e SMTP_PASSWORD="$SMTP_PASSWORD" \
+              -e CONTACT_TO_EMAIL="$CONTACT_TO_EMAIL" \
               --restart unless-stopped \
               ghcr.io/${{ github.repository }}/backend:latest
             
