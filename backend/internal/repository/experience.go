@@ -12,6 +12,8 @@ type ExperienceRepository interface {
 	Insert(exp *domain.Experience) error
 	GetAll() ([]domain.Experience, error)
 	Count() (int, error)
+	Delete(id int) error
+	Update(id int, exp *domain.Experience) error
 }
 
 type SQLiteExperienceRepository struct {
@@ -87,4 +89,46 @@ func (r *SQLiteExperienceRepository) Count() (int, error) {
 		return 0, fmt.Errorf("failed to count experiences: %w", err)
 	}
 	return count, nil
+}
+func (r *SQLiteExperienceRepository) Delete(id int) error {
+	query := `DELETE FROM experiences WHERE id = ?`
+	result, err := r.db.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete experience: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("experience not found")
+	}
+	return nil
+}
+
+func (r *SQLiteExperienceRepository) Update(id int, exp *domain.Experience) error {
+	dutiesJSON, err := json.Marshal(exp.Duties)
+	if err != nil {
+		return fmt.Errorf("failed to marshal duties: %w", err)
+	}
+
+	query := `UPDATE experiences SET company = ?, role = ?, period = ?, duties = ? WHERE id = ?`
+	result, err := r.db.Exec(query, exp.Company, exp.Role, exp.Period, string(dutiesJSON), id)
+	if err != nil {
+		return fmt.Errorf("failed to update experience: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("experience not found")
+	}
+
+	exp.ID = id
+	return nil
 }

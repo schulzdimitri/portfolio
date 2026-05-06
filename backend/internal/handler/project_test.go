@@ -116,3 +116,11 @@ func TestGetProjects_RepoError(t *testing.T) {
 		t.Errorf("expected status 500, got %d", w.Code)
 	}
 }
+
+func (m *mockProjectRepo) Delete(id int) error {
+	return nil
+}
+
+func (m *mockProjectRepo) Update(id int, p *domain.Project) error {
+	return nil
+}

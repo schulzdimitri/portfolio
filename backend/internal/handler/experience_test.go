@@ -92,3 +92,11 @@ func TestExperienceHandler_GetExperiences(t *testing.T) {
 		}
 	})
 }
+
+func (m *mockExperienceRepository) Delete(id int) error {
+	return nil
+}
+
+func (m *mockExperienceRepository) Update(id int, exp *domain.Experience) error {
+	return nil
+}

@@ -12,17 +12,14 @@ type ProjectRepository interface {
 	Insert(project *domain.Project) error
 	GetAll() ([]domain.Project, error)
 	Count() (int, error)
-}
-
-type SQLiteProjectRepository struct {
-	db *sql.DB
+	Delete(id int) error
+	Update(id int, project *domain.Project) error
 }
 
 func NewSQLiteProjectRepository(db *sql.DB) *SQLiteProjectRepository {
 	return &SQLiteProjectRepository{db: db}
 }
 
-// Insert adds a new project to the database
 func (r *SQLiteProjectRepository) Insert(project *domain.Project) error {
 	tagsJSON, err := json.Marshal(project.Tags)
 	if err != nil {
@@ -44,7 +41,6 @@ func (r *SQLiteProjectRepository) Insert(project *domain.Project) error {
 	return nil
 }
 
-// GetAll returns all projects from the database
 func (r *SQLiteProjectRepository) GetAll() ([]domain.Project, error) {
 	query := `SELECT id, title, description, github, tags FROM projects ORDER BY id ASC`
 	rows, err := r.db.Query(query)
@@ -72,7 +68,6 @@ func (r *SQLiteProjectRepository) GetAll() ([]domain.Project, error) {
 		return nil, fmt.Errorf("error iterating projects: %w", err)
 	}
 
-	// Return empty slice instead of nil for JSON serialization consistency
 	if projects == nil {
 		projects = make([]domain.Project, 0)
 	}
@@ -80,7 +75,6 @@ func (r *SQLiteProjectRepository) GetAll() ([]domain.Project, error) {
 	return projects, nil
 }
 
-// Count returns the total number of projects
 func (r *SQLiteProjectRepository) Count() (int, error) {
 	var count int
 	err := r.db.QueryRow(`SELECT COUNT(*) FROM projects`).Scan(&count)
@@ -91,4 +85,52 @@ func (r *SQLiteProjectRepository) Count() (int, error) {
 		return 0, fmt.Errorf("failed to count projects: %w", err)
 	}
 	return count, nil
+}
+
+func (r *SQLiteProjectRepository) Delete(id int) error {
+	query := `DELETE FROM projects WHERE id = ?`
+	result, err := r.db.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete project: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("project not found")
+	}
+
+	return nil
+}
+
+func (r *SQLiteProjectRepository) Update(id int, project *domain.Project) error {
+	tagsJSON, err := json.Marshal(project.Tags)
+	if err != nil {
+		return fmt.Errorf("failed to marshal tags: %w", err)
+	}
+
+	query := `UPDATE projects SET title = ?, description = ?, github = ?, tags = ? WHERE id = ?`
+	result, err := r.db.Exec(query, project.Title, project.Description, project.Github, string(tagsJSON), id)
+	if err != nil {
+		return fmt.Errorf("failed to update project: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("project not found")
+	}
+
+	project.ID = id
+	return nil
+}
+
+type SQLiteProjectRepository struct {
+	db *sql.DB
 }

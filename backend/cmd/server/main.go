@@ -50,10 +50,13 @@ func main() {
 	
 	mux.HandleFunc("GET /api/projects", projectHandler.GetProjects)
 	mux.Handle("POST /api/projects", authMiddleware(http.HandlerFunc(projectHandler.CreateProject)))
+        mux.Handle("PUT /api/projects/{id}", authMiddleware(http.HandlerFunc(projectHandler.UpdateProject)))
+        mux.Handle("DELETE /api/projects/{id}", authMiddleware(http.HandlerFunc(projectHandler.DeleteProject)))
 
-	mux.HandleFunc("GET /api/experiences", experienceHandler.GetExperiences)
-	mux.Handle("POST /api/experiences", authMiddleware(http.HandlerFunc(experienceHandler.CreateExperience)))
-
+        mux.HandleFunc("GET /api/experiences", experienceHandler.GetExperiences)
+        mux.Handle("POST /api/experiences", authMiddleware(http.HandlerFunc(experienceHandler.CreateExperience)))
+        mux.Handle("PUT /api/experiences/{id}", authMiddleware(http.HandlerFunc(experienceHandler.UpdateExperience)))
+        mux.Handle("DELETE /api/experiences/{id}", authMiddleware(http.HandlerFunc(experienceHandler.DeleteExperience)))
 	server := &http.Server{
 		Addr:         ":" + port,
 		Handler:      middleware.CORS(allowedOrigin, mux),
