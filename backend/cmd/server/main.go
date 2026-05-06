@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/schulzdimitri/portfolio/backend/internal/domain"
+
 	"github.com/schulzdimitri/portfolio/backend/internal/handler"
 	"github.com/schulzdimitri/portfolio/backend/internal/middleware"
 	"github.com/schulzdimitri/portfolio/backend/internal/repository"
@@ -67,5 +67,4 @@ func getenv(key, fallback string) string {
 		return v
 	}
 	return fallback
-}
 }
