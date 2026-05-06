@@ -2,10 +2,10 @@ package sender
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/smtp"
 
-	"github.com/schulzdimitri/portfolio/backend/internal/handler"
+	"github.com/schulzdimitri/portfolio/backend/internal/domain"
 )
 
 type SMTPConfig struct {
@@ -24,19 +24,19 @@ func NewSMTP(config SMTPConfig) *SMTPSender {
 	return &SMTPSender{config: config}
 }
 
-func (s *SMTPSender) Send(req handler.ContactRequest) error {
+func (s *SMTPSender) Send(msg domain.ContactMessage) error {
 	if s.config.Host == "" || s.config.User == "" {
-		log.Printf("[contact] SMTP not configured — logging message from %s <%s>: %s",
-			req.Name, req.Email, req.Message)
+		slog.Info("SMTP not configured, logging contact message",
+			"name", msg.Name, "email", msg.Email)
 		return nil
 	}
 
 	auth := smtp.PlainAuth("", s.config.User, s.config.Password, s.config.Host)
 	addr := fmt.Sprintf("%s:%s", s.config.Host, s.config.Port)
 
-	subject := fmt.Sprintf("Portfolio contact from %s", req.Name)
-	body := fmt.Sprintf("From: %s <%s>\n\n%s", req.Name, req.Email, req.Message)
-	msg := []byte("Subject: " + subject + "\r\n\r\n" + body)
+	subject := fmt.Sprintf("Portfolio contact from %s", msg.Name)
+	body := fmt.Sprintf("From: %s <%s>\n\n%s", msg.Name, msg.Email, msg.Message)
+	raw := []byte("Subject: " + subject + "\r\n\r\n" + body)
 
-	return smtp.SendMail(addr, auth, s.config.User, []string{s.config.To}, msg)
+	return smtp.SendMail(addr, auth, s.config.User, []string{s.config.To}, raw)
 }

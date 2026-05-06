@@ -1,39 +1,110 @@
-name: Backend CI
+name: Backend CI/CD
 
 on:
   push:
-    paths:
-      - "backend/**"
+    branches: [main]
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
   pull_request:
-    paths:
-      - "backend/**"
+    branches: [main]
+    paths: ["backend/**", ".github/workflows/backend-ci.yml"]
+
+defaults:
+  run:
+    working-directory: backend
 
 jobs:
-  ci:
-    name: Lint, Test & Build
+  # ── Job 1: Static analysis ──────────────────────────────────────────────────
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: "1.22"
           cache: true
 
-      - name: Vet
+      - name: go vet
         run: go vet ./...
 
-      - name: Test
+  # ── Job 2: Unit & integration tests ─────────────────────────────────────────
+  test:
+    name: Test
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: true
+
+      - name: Run tests
         run: go test -v -race -coverprofile=coverage.out ./...
 
-      - name: Coverage Report
+      - name: Coverage report
         run: go tool cover -func=coverage.out
 
-      - name: Build
-        run: go build -o /dev/null ./cmd/server
+      - name: Enforce coverage threshold (70%)
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | tr -d '%')
+          echo "Total coverage: ${COVERAGE}%"
+          awk -v cov="$COVERAGE" 'BEGIN { if (cov+0 < 70) { print "FAIL: coverage " cov "% is below 70%"; exit 1 } }'
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/coverage.out
+
+  # ── Job 3: Binary compilation ────────────────────────────────────────────────
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: true
+
+      - name: Build binary
+        run: CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-binary
+          path: backend/server
+
+  # ── Job 4: Docker build & push (main only) ──────────────────────────────────
+  docker:
+    name: Docker
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}

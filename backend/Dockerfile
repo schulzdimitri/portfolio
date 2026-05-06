@@ -8,10 +8,17 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server
 
-# Runtime stage — minimal image (~5MB total)
-FROM scratch
+# Runtime stage — alpine for SQLite file persistence support
+FROM alpine:3.19
 
-COPY --from=builder /app/server /server
+RUN apk --no-cache add ca-certificates tzdata
+
+WORKDIR /app
+COPY --from=builder /app/server .
+
+# SQLite database will be stored in /app/data — mount a volume here in production
+VOLUME /app/data
+ENV DB_PATH=/app/data/portfolio.db
 
 EXPOSE 8080
-ENTRYPOINT ["/server"]
+ENTRYPOINT ["./server"]
