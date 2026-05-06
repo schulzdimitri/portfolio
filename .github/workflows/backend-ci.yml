@@ -2,10 +2,10 @@ name: Backend CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths: ["backend/**", ".github/workflows/backend-ci.yml"]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
     paths: ["backend/**", ".github/workflows/backend-ci.yml"]
 
 defaults:
@@ -127,12 +127,13 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           CONTACT_TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.DO_SSH_KEY }}
           password: ${{ secrets.DO_PASSWORD }}
-          envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,CONTACT_TO_EMAIL
+          envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,CONTACT_TO_EMAIL,ADMIN_TOKEN
           script: |
             echo "Pulling latest image from GHCR..."
             docker pull ghcr.io/${{ github.repository }}/backend:latest
@@ -154,6 +155,7 @@ jobs:
               -e SMTP_USER="$SMTP_USER" \
               -e SMTP_PASSWORD="$SMTP_PASSWORD" \
               -e CONTACT_TO_EMAIL="$CONTACT_TO_EMAIL" \
+              -e ADMIN_TOKEN="$ADMIN_TOKEN" \
               --restart unless-stopped \
               ghcr.io/${{ github.repository }}/backend:latest
             
