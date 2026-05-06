@@ -3,3 +3,4 @@ backend/server
 backend/server.exe
 coverage.out
 node_modules
+portfolio.db
