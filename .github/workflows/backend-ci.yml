@@ -42,16 +42,19 @@ jobs:
           cache: true
 
       - name: Run tests
-        run: go test -v -race -coverprofile=coverage.out ./...
+        run: go test -v -race -coverprofile=coverage.raw ./...
+
+      - name: Filter coverage (exclude cmd/server)
+        run: grep -v "cmd/server" coverage.raw > coverage.out
 
       - name: Coverage report
         run: go tool cover -func=coverage.out
 
-      - name: Enforce coverage threshold (50%)
+      - name: Enforce coverage threshold (70%)
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | tr -d '%')
           echo "Total coverage: ${COVERAGE}%"
-          awk -v cov="$COVERAGE" 'BEGIN { if (cov+0 < 50) { print "FAIL: coverage " cov "% is below 50%"; exit 1 } }'
+          awk -v cov="$COVERAGE" 'BEGIN { if (cov+0 < 70) { print "FAIL: coverage " cov "% is below 70%"; exit 1 } }'
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
