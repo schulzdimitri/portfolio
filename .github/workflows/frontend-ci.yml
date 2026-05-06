@@ -2,23 +2,16 @@ name: Frontend CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
-      - "index.html"
-      - "css/**"
-      - "js/**"
-      - "data/**"
-      - "package.json"
-      - "vitest.config.js"
+      - "frontend/**"
       - ".github/workflows/frontend-ci.yml"
 
-# Required permissions for GitHub Pages deployment
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Prevent concurrent deployments to Pages
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -54,19 +47,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Stage frontend files
-        working-directory: frontend
         run: |
           mkdir -p dist
-          cp index.html dist/
-          cp -r css dist/
-          cp -r js dist/
-          cp -r img dist/ || true
-          cp -r data dist/ || true
+          cp frontend/index.html dist/
+          cp -r frontend/css dist/
+          cp -r frontend/js dist/
+          cp -r frontend/img dist/
 
       - name: Inject backend API URL
-        working-directory: frontend
-        # Set BACKEND_URL as a repository variable (Settings → Variables → Actions)
-        # e.g. https://portfolio-backend.fly.dev
         if: vars.BACKEND_URL != ''
         run: |
           sed -i 's|content="http://localhost:8080"|content="${{ vars.BACKEND_URL }}"|g' dist/index.html
@@ -77,9 +65,9 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/dist
+          path: dist
 
-  # ── Job 2: Deploy to GitHub Pages ───────────────────────────────────────────
+  # ── Job 3: Deploy to GitHub Pages ───────────────────────────────────────────
   deploy:
     name: Deploy to GitHub Pages
     needs: build

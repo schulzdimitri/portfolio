@@ -18,6 +18,8 @@ type mockProjectRepo struct {
 }
 
 func (m *mockProjectRepo) Insert(project *domain.Project) error {
+	project.ID = len(m.projects) + 1
+	m.projects = append(m.projects, *project)
 	return nil
 }
 
