@@ -1,0 +1,22 @@
+app = "portfolio-backend"
+primary_region = "gru"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+# Persistent volume for SQLite database
+[mounts]
+  source = "portfolio_data"
+  destination = "/app/data"
+
+[env]
+  PORT = "8080"
+  DB_PATH = "/app/data/portfolio.db"
+  # Set ALLOWED_ORIGIN and SMTP_* via: fly secrets set KEY=VALUE
