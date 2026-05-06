@@ -41,11 +41,18 @@ func main() {
 	projectHandler := handler.NewProjectHandler(projectRepo)
 	experienceHandler := handler.NewExperienceHandler(experienceRepo)
 
+	adminToken := getenv("ADMIN_TOKEN", "supersecret123")
+	authMiddleware := middleware.RequireAuth(adminToken)
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/health", handler.Health)
 	mux.Handle("/api/contact", contactLimiter.Middleware(handler.ContactHandler(contactRepo, emailSender)))
-	mux.HandleFunc("/api/projects", projectHandler.GetProjects)
-	mux.HandleFunc("/api/experiences", experienceHandler.GetExperiences)
+	
+	mux.HandleFunc("GET /api/projects", projectHandler.GetProjects)
+	mux.Handle("POST /api/projects", authMiddleware(http.HandlerFunc(projectHandler.CreateProject)))
+
+	mux.HandleFunc("GET /api/experiences", experienceHandler.GetExperiences)
+	mux.Handle("POST /api/experiences", authMiddleware(http.HandlerFunc(experienceHandler.CreateExperience)))
 
 	server := &http.Server{
 		Addr:         ":" + port,

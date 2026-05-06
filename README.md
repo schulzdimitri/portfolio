@@ -82,6 +82,7 @@ To fully run the backend in production (or locally with email capabilities), set
 | `PORT` | The port the HTTP server listens on. | `8080` |
 | `DB_PATH` | Path to the SQLite database file. | `portfolio.db` |
 | `ALLOWED_ORIGIN` | CORS allowed origin (Frontend URL). | `*` |
+| `ADMIN_TOKEN` | Token for securing POST /api/projects and /api/experiences. | `supersecret123` |
 | `SMTP_HOST` | Hostname of your email provider (e.g., smtp.gmail.com). | *empty* |
 | `SMTP_PORT` | Port for your SMTP server (e.g., 587). | *empty* |
 | `SMTP_USER` | SMTP authentication username. | *empty* |
@@ -89,6 +90,18 @@ To fully run the backend in production (or locally with email capabilities), set
 | `CONTACT_TO_EMAIL`| Destination email to receive contact form submissions. | *empty* |
 
 *(Note: If SMTP variables are missing, the backend will still run but will fallback to logging contact messages to the console).*
+
+## 🔐 Admin API (POST Data)
+
+You can dynamically add new projects and experiences to your database without touching the code. Make a POST request to the API with the header `Authorization: Bearer <ADMIN_TOKEN>`.
+
+### Example (Adding an Experience):
+```bash
+curl -X POST http://localhost:8080/api/experiences \
+  -H "Authorization: Bearer supersecret123" \
+  -H "Content-Type: application/json" \
+  -d '{"company": "Tech Co", "role": "Backend", "period": "2024", "duties": ["Go", "Docker"]}'
+```
 
 ## 🔄 CI/CD Pipelines
 

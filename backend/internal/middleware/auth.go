@@ -1,0 +1,32 @@
+package middleware
+
+import (
+	"net/http"
+	"strings"
+)
+
+// RequireAuth is a middleware that checks for a valid Bearer token in the Authorization header.
+func RequireAuth(expectedToken string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				http.Error(w, "Unauthorized: missing token", http.StatusUnauthorized)
+				return
+			}
+
+			parts := strings.Split(authHeader, " ")
+			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+				http.Error(w, "Unauthorized: invalid token format", http.StatusUnauthorized)
+				return
+			}
+
+			if parts[1] != expectedToken {
+				http.Error(w, "Unauthorized: invalid token", http.StatusUnauthorized)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}

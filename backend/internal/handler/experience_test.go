@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/schulzdimitri/portfolio/backend/internal/domain"
@@ -67,6 +68,27 @@ func TestExperienceHandler_GetExperiences(t *testing.T) {
 
 		if w.Code != http.StatusMethodNotAllowed {
 			t.Errorf("expected status 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("POST success", func(t *testing.T) {
+		payload := `{"company":"Test Co", "role":"Dev", "period":"2024", "duties":["Coding"]}`
+		req := httptest.NewRequest(http.MethodPost, "/api/experiences", strings.NewReader(payload))
+		w := httptest.NewRecorder()
+
+		h.CreateExperience(w, req)
+
+		if w.Code != http.StatusCreated {
+			t.Errorf("expected status 201, got %d", w.Code)
+		}
+
+		var resp domain.Experience
+		if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+			t.Fatalf("failed to decode response: %v", err)
+		}
+
+		if resp.ID == 0 {
+			t.Errorf("expected ID to be set, got 0")
 		}
 	})
 }
