@@ -4,3 +4,9 @@ backend/server.exe
 coverage.out
 node_modules
 portfolio.db
+# Playwright
+frontend/playwright-report/
+frontend/test-results/
+
+# E2E DB
+portfolio-e2e.db
