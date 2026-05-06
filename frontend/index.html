@@ -110,49 +110,15 @@
         <section id="experience" class="experience-section">
             <h2 class="section-title">Minha experiência:</h2>
 
-            <div class="tabs-container">
+            <div class="tabs-container" id="experiences-container">
                 <!-- Tab Headers -->
-                <div class="tabs-list">
-                    <button class="tab-btn active" data-target="job1">Tech Company A</button>
-                    <button class="tab-btn" data-target="job2">Fintech Startup</button>
-                    <button class="tab-btn" data-target="job3">Global Bank</button>
+                <div class="tabs-list" id="experiences-tabs">
+                    <!-- Rendered dynamically from API -->
                 </div>
 
                 <!-- Tab Contents -->
-                <div class="tabs-content">
-
-                    <div class="tab-pane active" id="job1">
-                        <h3 class="job-title">Backend Engineer <span class="highlight">@ Tech Company A</span></h3>
-                        <p class="job-dates">MAI 2024 - PRESENTE</p>
-                        <ul class="job-duties">
-                            <li>Desenvolvi e mantive microserviços escaláveis utilizando Golang e gRPC, reduzindo a
-                                latência média em 40%.</li>
-                            <li>Refatorei pipelines de dados em Python, aumentando o throughput de processamento para
-                                milhões de eventos diários.</li>
-                        </ul>
-                    </div>
-
-                    <div class="tab-pane" id="job2">
-                        <h3 class="job-title">Software Engineer <span class="highlight">@ Fintech Startup</span></h3>
-                        <p class="job-dates">JAN 2022 - ABR 2024</p>
-                        <ul class="job-duties">
-                            <li>Migrei o monolito legado construído em Java (Spring Boot) para uma arquitetura orientada
-                                a eventos usando Kafka.</li>
-                            <li>Integração de APIs de pagamento de terceiros com alta disponibilidade e zero downtime.
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="tab-pane" id="job3">
-                        <h3 class="job-title">Junior Developer <span class="highlight">@ Global Bank</span></h3>
-                        <p class="job-dates">FEV 2020 - DEZ 2021</p>
-                        <ul class="job-duties">
-                            <li>Atuei na manutenção de serviços críticos financeiros em Java, garantindo compliance e
-                                segurança de dados.</li>
-                            <li>Automatizei tarefas rotineiras de infraestrutura utilizando scripts em Python.</li>
-                        </ul>
-                    </div>
-
+                <div class="tabs-content" id="experiences-content">
+                    <!-- Rendered dynamically from API -->
                 </div>
             </div>
         </section>

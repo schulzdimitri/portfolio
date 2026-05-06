@@ -38,6 +38,14 @@ func migrate(db *sql.DB) error {
 			github TEXT NOT NULL,
 			tags TEXT NOT NULL
 		);
+
+		CREATE TABLE IF NOT EXISTS experiences (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			company TEXT NOT NULL,
+			role TEXT NOT NULL,
+			period TEXT NOT NULL,
+			duties TEXT NOT NULL
+		);
 	`)
 	return err
 }
