@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/schulzdimitri/portfolio/backend/internal/domain"
 	"github.com/schulzdimitri/portfolio/backend/internal/repository"
 )
 
