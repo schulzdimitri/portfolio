@@ -29,7 +29,7 @@ func setupTestServer(t *testing.T) (*httptest.Server, *sql.DB) {
 	projectRepo := repository.NewSQLiteProjectRepository(db)
 	experienceRepo := repository.NewSQLiteExperienceRepository(db)
 
-	emailSender := sender.NewSMTP(sender.SMTPConfig{}) // Mock or real, but we might just use empty
+	emailSender := sender.NewSMTP(sender.SMTPConfig{})
 
 	contactLimiter := middleware.NewRateLimiter(5, time.Minute)
 	projectHandler := handler.NewProjectHandler(projectRepo)

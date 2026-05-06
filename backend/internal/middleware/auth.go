@@ -5,7 +5,6 @@ import (
 	"strings"
 )
 
-// RequireAuth is a middleware that checks for a valid Bearer token in the Authorization header.
 func RequireAuth(expectedToken string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

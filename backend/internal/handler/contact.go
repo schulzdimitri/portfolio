@@ -11,12 +11,10 @@ import (
 	"github.com/schulzdimitri/portfolio/backend/internal/domain"
 )
 
-// ContactRepository is defined here (dependency inversion — handler owns its interface).
 type ContactRepository interface {
 	Save(ctx context.Context, msg domain.ContactMessage) error
 }
 
-// Sender is defined here so sender package doesn't import handler (fixes circular dep).
 type Sender interface {
 	Send(msg domain.ContactMessage) error
 }
@@ -45,7 +43,6 @@ func ContactHandler(repo ContactRepository, sender Sender) http.HandlerFunc {
 			return
 		}
 
-		// Email is best-effort: message is already persisted in DB.
 		if err := sender.Send(msg); err != nil {
 			slog.Warn("email notification failed, message saved in db", "error", err)
 		}
@@ -54,7 +51,6 @@ func ContactHandler(repo ContactRepository, sender Sender) http.HandlerFunc {
 	}
 }
 
-// validateContact trims fields in-place and validates required constraints.
 func validateContact(msg *domain.ContactMessage) error {
 	msg.Name = strings.TrimSpace(msg.Name)
 	msg.Email = strings.TrimSpace(msg.Email)

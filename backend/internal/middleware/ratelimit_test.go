@@ -11,14 +11,13 @@ import (
 
 func TestRateLimiter(t *testing.T) {
 	rl := middleware.NewRateLimiter(2, time.Second)
-	
+
 	nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
 	handler := rl.Middleware(nextHandler)
 
-	// Make 2 successful requests
 	for i := 0; i < 2; i++ {
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		req.RemoteAddr = "192.168.1.1:1234"
@@ -30,7 +29,6 @@ func TestRateLimiter(t *testing.T) {
 		}
 	}
 
-	// 3rd request should be rate limited
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.RemoteAddr = "192.168.1.1:5678"
 	w := httptest.NewRecorder()
@@ -40,7 +38,6 @@ func TestRateLimiter(t *testing.T) {
 		t.Errorf("request 3: expected 429, got %d", w.Code)
 	}
 
-	// Request from a different IP should succeed
 	req2 := httptest.NewRequest(http.MethodGet, "/", nil)
 	req2.RemoteAddr = "10.0.0.1:1234"
 	w2 := httptest.NewRecorder()
@@ -50,10 +47,8 @@ func TestRateLimiter(t *testing.T) {
 		t.Errorf("different IP: expected 200, got %d", w2.Code)
 	}
 
-	// Wait for window to expire
 	time.Sleep(1100 * time.Millisecond)
 
-	// Request from original IP should succeed again
 	req3 := httptest.NewRequest(http.MethodGet, "/", nil)
 	req3.RemoteAddr = "192.168.1.1:1234"
 	w3 := httptest.NewRecorder()
@@ -66,14 +61,13 @@ func TestRateLimiter(t *testing.T) {
 
 func TestRateLimiter_BadIP(t *testing.T) {
 	rl := middleware.NewRateLimiter(1, time.Second)
-	
+
 	nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
 	handler := rl.Middleware(nextHandler)
 
-	// Request with malformed IP (no port)
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.RemoteAddr = "bad-ip-format"
 	w := httptest.NewRecorder()

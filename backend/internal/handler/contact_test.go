@@ -82,7 +82,6 @@ func TestContact_RepoFailure_ReturnsInternalServerError(t *testing.T) {
 }
 
 func TestContact_SenderFailure_StillReturnsAccepted(t *testing.T) {
-	// Email is best-effort — DB saved successfully, so 202 is expected even if email fails
 	body := domain.ContactMessage{Name: "Dimitri", Email: "d@example.com", Message: "Hello!"}
 	rec := postContact(t, body, &mockRepo{}, &mockSender{shouldFail: true})
 	if rec.Code != http.StatusAccepted {
