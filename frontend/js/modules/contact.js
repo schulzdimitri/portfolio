@@ -29,9 +29,9 @@ export async function submitContact(form, apiBase) {
     feedback.className = 'form-feedback';
 
     const payload = {
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        message: form.message.value.trim(),
+        name: form.elements['name'].value.trim(),
+        email: form.elements['email'].value.trim(),
+        message: form.elements['message'].value.trim(),
     };
 
     try {

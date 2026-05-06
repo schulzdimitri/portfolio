@@ -71,8 +71,8 @@ describe('submitContact', () => {
 
     it('sends payload with trimmed values', async () => {
         global.fetch = vi.fn().mockResolvedValue({ ok: true });
-        form.name.value = '  Dimitri  ';
-        form.email.value = '  d@example.com  ';
+        form.elements['name'].value = '  Dimitri  ';
+        form.elements['email'].value = '  d@example.com  ';
 
         await submitContact(form, 'http://localhost:8080');
 
