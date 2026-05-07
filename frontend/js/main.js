@@ -3,10 +3,10 @@ import { loadProjects } from './modules/projects.js';
 import { loadExperiences } from './modules/experiences.js';
 import { initContactForm } from './modules/contact.js';
 
-function resolveApiBase() {
+function resolveApiBaseFromMeta() {
     const rawMeta = document.querySelector('meta[name="api-base"]')?.content?.trim() || '';
     const isLocalPage = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-    const metaPointsToLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(rawMeta);
+    const metaPointsToLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\\d+)?$/i.test(rawMeta);
 
     if (rawMeta && !(metaPointsToLocalhost && !isLocalPage)) {
         return rawMeta;
@@ -19,11 +19,34 @@ function resolveApiBase() {
     return '';
 }
 
-const API_BASE = resolveApiBase();
+async function loadRuntimeConfig() {
+    try {
+        const res = await fetch('/config.json', { cache: 'no-store' });
+        if (!res.ok) return { apiBase: '' };
+        const json = await res.json();
+        return { apiBase: (json && json.apiBase) ? String(json.apiBase).trim() : '' };
+    } catch (e) {
+        return { apiBase: '' };
+    }
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    initTabs();
-    loadProjects('projects-grid', API_BASE);
-    loadExperiences(API_BASE);
-    initContactForm(API_BASE);
-});
+async function initApp() {
+    const cfg = await loadRuntimeConfig();
+    const API_BASE = cfg.apiBase || resolveApiBaseFromMeta();
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            loadProjects('projects-grid', API_BASE);
+            loadExperiences(API_BASE);
+            initContactForm(API_BASE);
+        });
+    } else {
+        initTabs();
+        loadProjects('projects-grid', API_BASE);
+        loadExperiences(API_BASE);
+        initContactForm(API_BASE);
+    }
+}
+
+initApp();

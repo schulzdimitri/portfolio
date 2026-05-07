@@ -76,14 +76,23 @@ jobs:
           cp -r frontend/img dist/
 
       - name: Inject backend API URL
-        if: vars.BACKEND_URL != ''
         run: |
-          sed -i 's|<meta name="api-base" content="">|<meta name="api-base" content="${{ vars.BACKEND_URL }}">|g' dist/index.html
+          BACKEND_URL="${{ vars.BACKEND_URL != '' && vars.BACKEND_URL || secrets.BACKEND_URL }}"
+          echo "Using BACKEND_URL=${BACKEND_URL}"
+          if [ -n "${BACKEND_URL}" ]; then
+            sed -i 's|<meta name="api-base" content="">|<meta name="api-base" content="'"${BACKEND_URL}"'">|g' dist/index.html
+            # write runtime config for the frontend to read at boot
+            printf '{"apiBase":"%s"}\n' "${BACKEND_URL}" > dist/config.json
+          else
+            echo "No BACKEND_URL provided; leaving api-base empty"
+            printf '{"apiBase":""}\n' > dist/config.json
+          fi
 
-      - name: Require backend API URL
+      - name: Require backend API URL (only for main deploys)
+        if: github.ref == 'refs/heads/main'
         run: |
           if grep -q '<meta name="api-base" content="">' dist/index.html; then
-            echo "BACKEND_URL is required for production deploys"
+            echo "BACKEND_URL is required for production deploys on main branch"
             exit 1
           fi
 
