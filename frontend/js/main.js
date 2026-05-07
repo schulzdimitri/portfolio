@@ -17,7 +17,7 @@ export function resolveApiBase(runtimeApiBase = '', isLocalPage = ['localhost', 
 
 export async function loadRuntimeConfig() {
     try {
-        const res = await fetch('/config.json', { cache: 'no-store' });
+        const res = await fetch('config.json', { cache: 'no-store' });
         if (!res.ok) return { apiBase: '' };
         const json = await res.json();
         const raw = (json && json.apiBase) ? String(json.apiBase).trim() : '';

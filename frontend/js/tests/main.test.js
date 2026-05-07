@@ -27,6 +27,7 @@ describe('loadRuntimeConfig', () => {
         });
 
         await expect(loadRuntimeConfig()).resolves.toEqual({ apiBase: 'https://api.example.com' });
+        expect(global.fetch).toHaveBeenCalledWith('config.json', { cache: 'no-store' });
     });
 
     it('ignores masked or invalid values', async () => {
