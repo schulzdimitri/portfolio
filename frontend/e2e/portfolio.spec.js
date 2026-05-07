@@ -34,6 +34,41 @@ test.describe('Portfolio E2E Tests', () => {
     await submitBtn.click();
   });
 
+  test('Deve usar o apiBase vindo do config.json para buscar dados da API', async ({ page }) => {
+    const backendUrl = 'http://localhost:8080';
+    const requests = [];
+
+    await page.route('**/config.json', route => {
+      route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ apiBase: backendUrl }),
+      });
+    });
+
+    await page.route('**/api/projects', route => {
+      requests.push(route.request().url());
+      route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ projects: [] }),
+      });
+    });
+
+    await page.route('**/api/experiences', route => {
+      requests.push(route.request().url());
+      route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    await page.goto('/');
+
+    await expect(page.locator('#projects-grid')).toBeAttached();
+    await expect(page.locator('#experiences-tabs')).toBeVisible();
+    await expect.poll(() => requests.length).toBeGreaterThanOrEqual(2);
+    expect(requests.every(url => url.startsWith(backendUrl))).toBe(true);
+  });
+
   test('Deve criar uma experiência via API e exibi-la no frontend', async ({ page, request }) => {
     const uniqueId = Date.now();
     const testCompany = `Playwright E2E Corp ${uniqueId}`;

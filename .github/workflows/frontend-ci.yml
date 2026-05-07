@@ -78,23 +78,50 @@ jobs:
       - name: Inject backend API URL
         run: |
           BACKEND_URL="${{ vars.BACKEND_URL != '' && vars.BACKEND_URL || secrets.BACKEND_URL }}"
-          echo "Using BACKEND_URL=${BACKEND_URL}"
           if [ -n "${BACKEND_URL}" ]; then
-            sed -i 's|<meta name="api-base" content="">|<meta name="api-base" content="'"${BACKEND_URL}"'">|g' dist/index.html
-            # write runtime config for the frontend to read at boot
-            printf '{"apiBase":"%s"}\n' "${BACKEND_URL}" > dist/config.json
-          else
-            echo "No BACKEND_URL provided; leaving api-base empty"
-            printf '{"apiBase":""}\n' > dist/config.json
-          fi
+            BACKEND_URL="${BACKEND_URL}" python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import sys
 
-      - name: Require backend API URL (only for main deploys)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          if grep -q '<meta name="api-base" content="">' dist/index.html; then
-            echo "BACKEND_URL is required for production deploys on main branch"
-            exit 1
-          fi
+          backend_url = os.environ.get('BACKEND_URL', '').strip()
+          if not backend_url or backend_url == '***' or not backend_url.startswith(('http://', 'https://')):
+              print('BACKEND_URL must be a valid http(s) URL for production deploys on main branch')
+              sys.exit(1)
+
+          pathlib.Path('dist/config.json').write_text(json.dumps({'apiBase': backend_url}) + '\n', encoding='utf-8')
+          print('Injected runtime config into dist/config.json')
+          PY
+                      echo "Using BACKEND_URL=***"
+                    else
+                      echo "No BACKEND_URL provided; leaving api-base empty"
+                      printf '{"apiBase":""}\n' > dist/config.json
+                    fi
+
+                - name: Require backend API URL (only for main deploys)
+                  if: github.ref == 'refs/heads/main'
+                  run: |
+                    python3 - <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          config_path = pathlib.Path('dist/config.json')
+          if not config_path.exists():
+              print('BACKEND_URL is required for production deploys on main branch')
+              sys.exit(1)
+
+          try:
+              backend_url = json.loads(config_path.read_text(encoding='utf-8')).get('apiBase', '').strip()
+          except Exception:
+              print('BACKEND_URL is required for production deploys on main branch')
+              sys.exit(1)
+
+          if not backend_url or backend_url == '***' or not backend_url.startswith(('http://', 'https://')):
+              print('BACKEND_URL is required for production deploys on main branch')
+              sys.exit(1)
+          PY
 
       - name: Configure Pages
         uses: actions/configure-pages@v4

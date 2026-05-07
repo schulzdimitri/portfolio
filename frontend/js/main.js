@@ -3,13 +3,9 @@ import { loadProjects } from './modules/projects.js';
 import { loadExperiences } from './modules/experiences.js';
 import { initContactForm } from './modules/contact.js';
 
-function resolveApiBaseFromMeta() {
-    const rawMeta = document.querySelector('meta[name="api-base"]')?.content?.trim() || '';
-    const isLocalPage = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-    const metaPointsToLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\\d+)?$/i.test(rawMeta);
-
-    if (rawMeta && !(metaPointsToLocalhost && !isLocalPage)) {
-        return rawMeta;
+export function resolveApiBase(runtimeApiBase = '', isLocalPage = ['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+    if (runtimeApiBase) {
+        return runtimeApiBase;
     }
 
     if (isLocalPage) {
@@ -19,20 +15,30 @@ function resolveApiBaseFromMeta() {
     return '';
 }
 
-async function loadRuntimeConfig() {
+export async function loadRuntimeConfig() {
     try {
         const res = await fetch('/config.json', { cache: 'no-store' });
         if (!res.ok) return { apiBase: '' };
         const json = await res.json();
-        return { apiBase: (json && json.apiBase) ? String(json.apiBase).trim() : '' };
+        const raw = (json && json.apiBase) ? String(json.apiBase).trim() : '';
+        if (!raw || /^\*+$/.test(raw) || /^REDACTED$/i.test(raw)) {
+            console.warn('runtime config: apiBase is empty or masked, ignoring');
+            return { apiBase: '' };
+        }
+        const isValid = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/.test(raw) || /^\//.test(raw);
+        if (!isValid) {
+            console.warn('runtime config: apiBase looks invalid, ignoring', raw);
+            return { apiBase: '' };
+        }
+        return { apiBase: raw };
     } catch (e) {
         return { apiBase: '' };
     }
 }
 
-async function initApp() {
+export async function initApp() {
     const cfg = await loadRuntimeConfig();
-    const API_BASE = cfg.apiBase || resolveApiBaseFromMeta();
+    const API_BASE = resolveApiBase(cfg.apiBase);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -49,4 +55,6 @@ async function initApp() {
     }
 }
 
-initApp();
+if (!(typeof import.meta !== 'undefined' && import.meta.vitest)) {
+    initApp();
+}
