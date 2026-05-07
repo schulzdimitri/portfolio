@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -13,6 +14,7 @@ import (
 
 type mockExperienceRepository struct {
 	experiences []domain.Experience
+	err         error
 }
 
 func (m *mockExperienceRepository) Insert(exp *domain.Experience) error {
@@ -93,10 +95,117 @@ func TestExperienceHandler_GetExperiences(t *testing.T) {
 	})
 }
 
-func (m *mockExperienceRepository) Delete(id int) error {
-	return nil
+func (m *mockExperienceRepository) Delete(id int) error                       { return m.err }
+func (m *mockExperienceRepository) Update(id int, p *domain.Experience) error { return m.err }
+
+func TestUpdateExperience(t *testing.T) {
+	repo := &mockExperienceRepository{}
+	h := handler.NewExperienceHandler(repo)
+
+	t.Run("Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/experiences/1", nil)
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/experiences/abc", strings.NewReader(`{}`))
+		req.SetPathValue("id", "abc")
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid JSON", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/experiences/1", strings.NewReader(`{invalid`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Success", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/experiences/1", strings.NewReader(`{"company":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("expected 200, got %d", w.Code)
+		}
+	})
+
+	t.Run("Not Found", func(t *testing.T) {
+		repo.err = errors.New("experience not found")
+		req := httptest.NewRequest(http.MethodPut, "/api/experiences/1", strings.NewReader(`{"company":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected 404, got %d", w.Code)
+		}
+	})
+
+	t.Run("Internal Error", func(t *testing.T) {
+		repo.err = errors.New("other error")
+		req := httptest.NewRequest(http.MethodPut, "/api/experiences/1", strings.NewReader(`{"company":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateExperience(w, req)
+		if w.Code != http.StatusInternalServerError {
+			t.Errorf("expected 500, got %d", w.Code)
+		}
+	})
 }
 
-func (m *mockExperienceRepository) Update(id int, exp *domain.Experience) error {
-	return nil
+func TestDeleteExperience(t *testing.T) {
+	repo := &mockExperienceRepository{}
+	h := handler.NewExperienceHandler(repo)
+
+	t.Run("Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/experiences/1", nil)
+		w := httptest.NewRecorder()
+		h.DeleteExperience(w, req)
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodDelete, "/api/experiences/abc", nil)
+		req.SetPathValue("id", "abc")
+		w := httptest.NewRecorder()
+		h.DeleteExperience(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Not Found", func(t *testing.T) {
+		repo.err = errors.New("experience not found")
+		req := httptest.NewRequest(http.MethodDelete, "/api/experiences/1", nil)
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.DeleteExperience(w, req)
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected 404, got %d", w.Code)
+		}
+	})
+
+	t.Run("Success", func(t *testing.T) {
+		repo.err = nil
+		req := httptest.NewRequest(http.MethodDelete, "/api/experiences/1", nil)
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.DeleteExperience(w, req)
+		if w.Code != http.StatusNoContent {
+			t.Errorf("expected 204, got %d", w.Code)
+		}
+	})
 }

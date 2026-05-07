@@ -117,10 +117,118 @@ func TestGetProjects_RepoError(t *testing.T) {
 	}
 }
 
-func (m *mockProjectRepo) Delete(id int) error {
-	return nil
+func (m *mockProjectRepo) Delete(id int) error { return m.err }
+
+func (m *mockProjectRepo) Update(id int, p *domain.Project) error { return m.err }
+
+func TestUpdateProject(t *testing.T) {
+	repo := &mockProjectRepo{}
+	h := handler.NewProjectHandler(repo)
+
+	t.Run("Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/projects/1", nil)
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/projects/abc", strings.NewReader(`{}`))
+		req.SetPathValue("id", "abc")
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid JSON", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/projects/1", strings.NewReader(`{invalid`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Success", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPut, "/api/projects/1", strings.NewReader(`{"title":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("expected 200, got %d", w.Code)
+		}
+	})
+
+	t.Run("Not Found", func(t *testing.T) {
+		repo.err = errors.New("project not found")
+		req := httptest.NewRequest(http.MethodPut, "/api/projects/1", strings.NewReader(`{"title":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected 404, got %d", w.Code)
+		}
+	})
+
+	t.Run("Internal Error", func(t *testing.T) {
+		repo.err = errors.New("other error")
+		req := httptest.NewRequest(http.MethodPut, "/api/projects/1", strings.NewReader(`{"title":"Updated"}`))
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.UpdateProject(w, req)
+		if w.Code != http.StatusInternalServerError {
+			t.Errorf("expected 500, got %d", w.Code)
+		}
+	})
 }
 
-func (m *mockProjectRepo) Update(id int, p *domain.Project) error {
-	return nil
+func TestDeleteProject(t *testing.T) {
+	repo := &mockProjectRepo{}
+	h := handler.NewProjectHandler(repo)
+
+	t.Run("Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/api/projects/1", nil)
+		w := httptest.NewRecorder()
+		h.DeleteProject(w, req)
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected 405, got %d", w.Code)
+		}
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodDelete, "/api/projects/abc", nil)
+		req.SetPathValue("id", "abc")
+		w := httptest.NewRecorder()
+		h.DeleteProject(w, req)
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("expected 400, got %d", w.Code)
+		}
+	})
+
+	t.Run("Not Found", func(t *testing.T) {
+		repo.err = errors.New("project not found")
+		req := httptest.NewRequest(http.MethodDelete, "/api/projects/1", nil)
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.DeleteProject(w, req)
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected 404, got %d", w.Code)
+		}
+	})
+
+	t.Run("Success", func(t *testing.T) {
+		repo.err = nil
+		req := httptest.NewRequest(http.MethodDelete, "/api/projects/1", nil)
+		req.SetPathValue("id", "1")
+		w := httptest.NewRecorder()
+		h.DeleteProject(w, req)
+		if w.Code != http.StatusNoContent {
+			t.Errorf("expected 204, got %d", w.Code)
+		}
+	})
 }
