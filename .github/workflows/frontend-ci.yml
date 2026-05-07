@@ -78,7 +78,14 @@ jobs:
       - name: Inject backend API URL
         if: vars.BACKEND_URL != ''
         run: |
-          sed -i 's|content="http://localhost:8080"|content="${{ vars.BACKEND_URL }}"|g' dist/index.html
+          sed -i 's|<meta name="api-base" content="">|<meta name="api-base" content="${{ vars.BACKEND_URL }}">|g' dist/index.html
+
+      - name: Require backend API URL
+        run: |
+          if grep -q '<meta name="api-base" content="">' dist/index.html; then
+            echo "BACKEND_URL is required for production deploys"
+            exit 1
+          fi
 
       - name: Configure Pages
         uses: actions/configure-pages@v4
