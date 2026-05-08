@@ -95,13 +95,47 @@ To fully run the backend in production (or locally with email capabilities), set
 
 You can dynamically add new projects and experiences to your database without touching the code. Make a POST request to the API with the header `Authorization: Bearer <ADMIN_TOKEN>`.
 
-### Example (Adding an Experience):
+### Adding an Experience:
 ```bash
-curl -X POST http://localhost:8080/api/experiences \
-  -H "Authorization: Bearer supersecret123" \
+curl -X POST "https://jellyfish-app-ows8l.ondigitalocean.app/api/experiences" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"company": "Tech Co", "role": "Backend", "period": "2024", "duties": ["Go", "Docker"]}'
+  -d '{
+    "company": "Huawei",
+    "role": "Backend Maintenance Engineer - Sistema Django em Produção",
+    "period": "2024",
+    "duties": [
+      "Manutenção proativa e troubleshooting do principal sistema Django em produção",
+      "Implementação de correções e otimizações de performance",
+      "Suporte técnico a equipes de negócio e operações"
+    ]
+  }'
 ```
+
+**Experience Fields:**
+- `company` (string): Company name
+- `role` (string): Job title/position
+- `period` (string): Employment period (e.g., "fev 2023 - ago 2024")
+- `duties` (array): List of responsibilities and accomplishments
+
+### Adding a Project:
+```bash
+curl -X POST "https://jellyfish-app-ows8l.ondigitalocean.app/api/projects" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Portfolio API",
+    "description": "REST API desenvolvida em Go com SQLite para gerenciar experiências, projetos e contatos. Inclui autenticação por Bearer token, CORS e rate limiting.",
+    "github": "https://github.com/schulzdimitri/portfolio",
+    "tags": ["Go", "SQLite", "REST API", "Docker", "CI/CD", "GitHub Actions"]
+  }'
+```
+
+**Project Fields:**
+- `title` (string): Project name
+- `description` (string): Detailed description of the project
+- `github` (string): GitHub repository URL
+- `tags` (array): Technologies and skills used
 
 ## 🔄 CI/CD Pipelines
 
