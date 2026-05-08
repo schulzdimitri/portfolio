@@ -119,45 +119,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy to Droplet via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          CONTACT_TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
-          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
-        with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USERNAME }}
-          key: ${{ secrets.DO_SSH_KEY }}
-          password: ${{ secrets.DO_PASSWORD }}
-          envs: SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,CONTACT_TO_EMAIL,ADMIN_TOKEN
-          script: |
-            echo "Pulling latest image from GHCR..."
-            docker pull ghcr.io/${{ github.repository }}/backend:latest
-            
-            echo "Stopping existing container..."
-            docker stop portfolio-backend || true
-            docker rm portfolio-backend || true
-            
-            echo "Creating data directory if it doesn't exist..."
-            mkdir -p /root/portfolio-data
-            
-            echo "Running new container..."
-            docker run -d \
-              --name portfolio-backend \
-              -p 8080:8080 \
-              -v /root/portfolio-data:/app/data \
-              -e SMTP_HOST="$SMTP_HOST" \
-              -e SMTP_PORT="$SMTP_PORT" \
-              -e SMTP_USER="$SMTP_USER" \
-              -e SMTP_PASSWORD="$SMTP_PASSWORD" \
-              -e CONTACT_TO_EMAIL="$CONTACT_TO_EMAIL" \
-              -e ADMIN_TOKEN="$ADMIN_TOKEN" \
-              --restart unless-stopped \
-              ghcr.io/${{ github.repository }}/backend:latest
-            
-            echo "Cleanup old dangling images..."
-            docker image prune -af
+      - name: Deploy to DigitalOcean App Platform
+        run: |
+          echo "Backend Docker image built and pushed to GHCR"
+          echo "ghcr.io/${{ github.repository }}/backend:latest"
+          echo "ghcr.io/${{ github.repository }}/backend:${{ github.sha }}"
+          echo ""
+          echo "To deploy, manually trigger App Platform redeploy or use:"
+          echo "doctl apps create-deployment --app-id <app-id>"
