@@ -8,15 +8,14 @@ on:
     branches: [main, develop]
     paths: ["backend/**", ".github/workflows/backend-ci.yml"]
 
-defaults:
-  run:
-    working-directory: backend
-
 jobs:
   # ── Job 1: Static analysis ──────────────────────────────────────────────────
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
@@ -33,6 +32,9 @@ jobs:
     name: Test
     needs: lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
@@ -67,6 +69,9 @@ jobs:
     name: Build
     needs: test
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
