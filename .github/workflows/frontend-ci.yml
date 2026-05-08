@@ -77,16 +77,22 @@ jobs:
 
       - name: Inject backend API URL
         run: |
+          DEFAULT_BACKEND_URL="https://jellyfish-app-ows8l.ondigitalocean.app/"
           BACKEND_URL="${{ vars.BACKEND_URL != '' && vars.BACKEND_URL || secrets.BACKEND_URL }}"
+
+          if [ -z "${BACKEND_URL}" ]; then
+            BACKEND_URL="${DEFAULT_BACKEND_URL}"
+          fi
+
           if [ -n "${BACKEND_URL}" ]; then
             case "$BACKEND_URL" in
-              http://*|https://*)
+              https://*)
                 printf '{"apiBase":"%s"}\n' "$BACKEND_URL" > dist/config.json
                 echo "Injected runtime config into dist/config.json"
                 echo "Using BACKEND_URL=${BACKEND_URL}"
                 ;;
               *)
-                echo "BACKEND_URL must be a valid http(s) URL for production deploys on main branch"
+                echo "BACKEND_URL must be a valid https URL for production deploys on main branch"
                 exit 1
                 ;;
             esac
@@ -109,11 +115,11 @@ jobs:
             exit 1
           fi
           case "$backend_url" in
-            http://*|https://*)
+            https://*)
               echo "BACKEND_URL looks valid"
               ;;
             *)
-              echo "BACKEND_URL is required for production deploys on main branch"
+              echo "BACKEND_URL is required to be https for production deploys on main branch"
               exit 1
               ;;
           esac
