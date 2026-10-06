@@ -2,9 +2,9 @@
 from sqlalchemy import insert, select, update, delete
 from app.models.entities.projects import projects
 from app.models.settings.database_connection_handler import DBConnectionHandler
+from app.models.repositories.interfaces.projects import ProjectsRepositoryInterface
 
-
-class ProjectsRepository:
+class ProjectsRepository(ProjectsRepositoryInterface):
     async def insert_project(self, project_infos: dict) -> None:
         async with DBConnectionHandler() as db:
             query = insert(projects).values(**project_infos)
