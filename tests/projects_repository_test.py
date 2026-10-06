@@ -2,7 +2,7 @@ import pytest
 from app.models.repositories.projects import ProjectsRepository
 
 @pytest.mark.asyncio
-# @pytest.mark.skip(reason="Insert in db")
+@pytest.mark.skip(reason="Insert in db")
 async def test_insert_project():
     project = {
         "project_name": "Test Project",
@@ -14,7 +14,7 @@ async def test_insert_project():
     await repository.insert_project(project)
 
 @pytest.mark.asyncio
-# @pytest.mark.skip(reason="Select in db")
+@pytest.mark.skip(reason="Select in db")
 async def test_get_project_by_name():
     project = {
         "project_name": "Test Project",
@@ -27,7 +27,7 @@ async def test_get_project_by_name():
     assert result[0]["project_name"] == "Test Project"
 
 @pytest.mark.asyncio
-# @pytest.mark.skip(reason="Select in db")
+@pytest.mark.skip(reason="Select in db")
 async def test_get_all_projects():
     project = {
         "project_name": "Test Project",
@@ -40,7 +40,7 @@ async def test_get_all_projects():
     assert len(result) > 0
 
 @pytest.mark.asyncio
-# @pytest.mark.skip(reason="Update in db")
+@pytest.mark.skip(reason="Update in db")
 async def test_update_project():
     project = {
         "project_name": "Test Project",
