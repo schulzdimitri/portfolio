@@ -11,7 +11,6 @@ class ProjectsRepository(ProjectsRepositoryInterface):
             await db.session.execute(query)
             await db.session.commit()
         
-
     async def get_project_by_name(self, project_name: str) -> list[dict]:
         async with DBConnectionHandler() as db:
             query = (
@@ -24,8 +23,6 @@ class ProjectsRepository(ProjectsRepositoryInterface):
             projects_list = [dict(row._mapping) for row in rows]
 
             return projects_list
-
-            
 
     async def get_all_projects(self) -> list[dict]:
         async with DBConnectionHandler() as db:
