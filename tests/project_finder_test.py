@@ -17,7 +17,8 @@ class MockProjectRepository:
         self.get_project_by_name_att["project_name"] = project_name
         if "projects" in self.get_projects_att:
             return [
-                project for project in self.get_projects_att["projects"]
+                project
+                for project in self.get_projects_att["projects"]
                 if project.get("project_name") == project_name
             ]
         return []
@@ -75,10 +76,7 @@ async def test_find_project_by_name() -> None:
 
     response = await project_finder.find_project_by_name("Project 1")
 
-    assert (
-        project_repository.get_project_by_name_att["project_name"]
-        == "Project 1"
-    )
+    assert project_repository.get_project_by_name_att["project_name"] == "Project 1"
     assert response["type"] == "PROJECT"
     assert response["count"] == 1
     assert response["attributes"] == [project_info]

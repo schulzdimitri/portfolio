@@ -5,9 +5,7 @@ from .interfaces.project_register import ProjectRegisterInterface
 
 
 class ProjectRegister(ProjectRegisterInterface):
-    def __init__(
-        self, project_repository: ProjectsRepositoryInterface
-    ) -> None:
+    def __init__(self, project_repository: ProjectsRepositoryInterface) -> None:
         self.__project_repository = project_repository
 
     async def register_project(self, project_info: dict) -> dict:
@@ -27,9 +25,7 @@ class ProjectRegister(ProjectRegisterInterface):
             or not isinstance(project_description, str)
             or not isinstance(project_url, str)
         ):
-            raise ValueError(
-                "Project name, description, and URL must be strings"
-            )
+            raise ValueError("Project name, description, and URL must be strings")
 
         if not project_url.startswith("http"):
             raise ValueError("Project URL must be a valid URL")
@@ -38,8 +34,4 @@ class ProjectRegister(ProjectRegisterInterface):
         await self.__project_repository.insert_project(project_info)
 
     def __format_response(self, project_info: dict) -> dict:
-        return {
-            "type": "PROJECT",
-            "count": 1,
-            "attributes": project_info
-        }
+        return {"type": "PROJECT", "count": 1, "attributes": project_info}
