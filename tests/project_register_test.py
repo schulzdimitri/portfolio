@@ -24,11 +24,14 @@ async def test_register_project() -> None:
 
     response = await project_register.register_project(project_info)
 
-    assert project_repository.insert_projects_att["project_info"] == project_info
+    assert (
+        project_repository.insert_projects_att["project_info"] == project_info
+    )
 
     assert response["type"] == "PROJECT"
     assert response["count"] == 1
     assert response["attributes"] == project_info
+
 
 @pytest.mark.asyncio
 async def test_register_project_invalid_project_name() -> None:
@@ -43,9 +46,13 @@ async def test_register_project_invalid_project_name() -> None:
 
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
-    
-    assert str(excinfo.value) == "Project name, description, and URL are required"
-    assert project_repository.insert_projects_att == {}  
+
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
+    assert project_repository.insert_projects_att == {}
+
 
 @pytest.mark.asyncio
 async def test_register_project_invalid_project_description() -> None:
@@ -60,9 +67,13 @@ async def test_register_project_invalid_project_description() -> None:
 
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
-    
-    assert str(excinfo.value) == "Project name, description, and URL are required"
-    assert project_repository.insert_projects_att == {}  
+
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
+    assert project_repository.insert_projects_att == {}
+
 
 @pytest.mark.asyncio
 async def test_register_project_invalid_project_url() -> None:
@@ -77,12 +88,16 @@ async def test_register_project_invalid_project_url() -> None:
 
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
-    
-    assert str(excinfo.value) == "Project name, description, and URL are required"
-    assert project_repository.insert_projects_att == {}  
+
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
+    assert project_repository.insert_projects_att == {}
+
 
 @pytest.mark.asyncio
-async def test_register_project_invalid_project_url_not_startwith_http() -> None:
+async def test_register_invalid_project_url_not_startwith_http() -> None:
     project_repository = MockProjectRepository()
     project_register = ProjectRegister(project_repository)
 
@@ -94,6 +109,6 @@ async def test_register_project_invalid_project_url_not_startwith_http() -> None
 
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
-    
+
     assert str(excinfo.value) == "Project URL must be a valid URL"
-    assert project_repository.insert_projects_att == {}  
+    assert project_repository.insert_projects_att == {}

@@ -37,7 +37,10 @@ async def test_find_all_projects() -> None:
     }
 
     project_repository = MockProjectRepository()
-    project_repository.get_projects_att["projects"] = [project_info_1, project_info_2]
+    project_repository.get_projects_att["projects"] = [
+        project_info_1,
+        project_info_2,
+    ]
     project_finder = ProjectFinder(project_repository)
 
     response = await project_finder.find_all_projects()
@@ -72,7 +75,10 @@ async def test_find_project_by_name() -> None:
 
     response = await project_finder.find_project_by_name("Project 1")
 
-    assert project_repository.get_project_by_name_att["project_name"] == "Project 1"
+    assert (
+        project_repository.get_project_by_name_att["project_name"]
+        == "Project 1"
+    )
     assert response["type"] == "PROJECT"
     assert response["count"] == 1
     assert response["attributes"] == [project_info]
