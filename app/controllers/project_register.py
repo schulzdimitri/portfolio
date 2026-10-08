@@ -1,9 +1,15 @@
-from app.models.repositories.interfaces.projects import ProjectsRepositoryInterface
+from app.models.repositories.interfaces.projects import (
+    ProjectsRepositoryInterface,
+)
+from .interfaces.project_register import ProjectRegisterInterface
 
-class ProjectRegister:
-    def __init__(self, project_repository: ProjectsRepositoryInterface) -> None:
+
+class ProjectRegister(ProjectRegisterInterface):
+    def __init__(
+        self, project_repository: ProjectsRepositoryInterface
+    ) -> None:
         self.__project_repository = project_repository
-    
+
     async def register_project(self, project_info: dict) -> dict:
         self.__validate_project_data(project_info)
         await self.__registry_project(project_info)
@@ -16,8 +22,15 @@ class ProjectRegister:
 
         if not project_name or not project_description or not project_url:
             raise ValueError("Project name, description, and URL are required")
-        if not isinstance(project_name, str) or not isinstance(project_description, str) or not isinstance(project_url, str):
-            raise ValueError("Project name, description, and URL must be strings")
+        if (
+            not isinstance(project_name, str)
+            or not isinstance(project_description, str)
+            or not isinstance(project_url, str)
+        ):
+            raise ValueError(
+                "Project name, description, and URL must be strings"
+            )
+
         if not project_url.startswith("http"):
             raise ValueError("Project URL must be a valid URL")
 
