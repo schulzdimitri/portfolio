@@ -42,7 +42,11 @@ jobs:
   deploy:
     needs: [build, tests]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: |
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.build.result == 'success' &&
+      needs.tests.result == 'success'
     steps:
       - uses: actions/checkout@v4
       - name: Install Vercel CLI
