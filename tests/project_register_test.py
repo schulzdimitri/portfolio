@@ -24,7 +24,9 @@ async def test_register_project() -> None:
 
     response = await project_register.register_project(project_info)
 
-    assert project_repository.insert_projects_att["project_info"] == project_info
+    assert (
+        project_repository.insert_projects_att["project_info"] == project_info
+    )
 
     assert response["type"] == "PROJECT"
     assert response["count"] == 1
@@ -45,7 +47,10 @@ async def test_register_project_invalid_project_name() -> None:
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
 
-    assert str(excinfo.value) == "Project name, description, and URL are required"
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
     assert project_repository.insert_projects_att == {}
 
 
@@ -63,7 +68,10 @@ async def test_register_project_invalid_project_description() -> None:
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
 
-    assert str(excinfo.value) == "Project name, description, and URL are required"
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
     assert project_repository.insert_projects_att == {}
 
 
@@ -81,7 +89,10 @@ async def test_register_project_invalid_project_url() -> None:
     with pytest.raises(ValueError) as excinfo:
         await project_register.register_project(project_info)
 
-    assert str(excinfo.value) == "Project name, description, and URL are required"
+    assert (
+        str(excinfo.value)
+        == "Project name, description, and URL are required"
+    )
     assert project_repository.insert_projects_att == {}
 
 

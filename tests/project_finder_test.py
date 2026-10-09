@@ -76,7 +76,10 @@ async def test_find_project_by_name() -> None:
 
     response = await project_finder.find_project_by_name("Project 1")
 
-    assert project_repository.get_project_by_name_att["project_name"] == "Project 1"
+    assert (
+        project_repository.get_project_by_name_att["project_name"]
+        == "Project 1"
+    )
     assert response["type"] == "PROJECT"
     assert response["count"] == 1
     assert response["attributes"] == [project_info]

@@ -6,10 +6,16 @@ from app.models.settings.metadata import metadata
 CONNECTION_STRING = "sqlite+aiosqlite:///schema.db"
 
 engine = create_async_engine(
-    url=CONNECTION_STRING, echo=False, pool_size=2, max_overflow=0, pool_timeout=30
+    url=CONNECTION_STRING,
+    echo=False,
+    pool_size=2,
+    max_overflow=0,
+    pool_timeout=30,
 )
 
-async_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+async_session = sessionmaker(
+    bind=engine, class_=AsyncSession, expire_on_commit=False
+)
 
 
 class DBConnectionHandler:
