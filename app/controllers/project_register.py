@@ -38,8 +38,4 @@ class ProjectRegister(ProjectRegisterInterface):
         await self.__project_repository.insert_project(project_info)
 
     def __format_response(self, project_info: dict) -> dict:
-        return {
-            "type": "PROJECT",
-            "count": 1,
-            "attributes": project_info
-        }
+        return {"type": "PROJECT", "count": 1, "attributes": project_info}

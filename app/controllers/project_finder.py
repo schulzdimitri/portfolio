@@ -17,7 +17,7 @@ class ProjectFinder(ProjectFinderInterface):
         return {
             "type": "PROJECT",
             "count": len(project),
-            "attributes": project
+            "attributes": project,
         }
 
     async def find_all_projects(self) -> dict:
@@ -25,5 +25,5 @@ class ProjectFinder(ProjectFinderInterface):
         return {
             "type": "PROJECT",
             "count": len(projects),
-            "attributes": projects
+            "attributes": projects,
         }

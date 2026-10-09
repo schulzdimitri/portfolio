@@ -15,9 +15,8 @@ class ProjectsRepository(ProjectsRepositoryInterface):
 
     async def get_project_by_name(self, project_name: str) -> list[dict]:
         async with DBConnectionHandler() as db:
-            query = (
-                select(projects)
-                .where(projects.c.project_name == project_name)
+            query = select(projects).where(
+                projects.c.project_name == project_name
             )
             result = await db.session.execute(query)
             rows = result.mappings().fetchall()
@@ -36,9 +35,7 @@ class ProjectsRepository(ProjectsRepositoryInterface):
         async with DBConnectionHandler() as db:
             query = (
                 update(projects)
-                .where(
-                    projects.c.project_name == project_info["project_name"]
-                )
+                .where(projects.c.project_name == project_info["project_name"])
                 .values(**project_info)
             )
             await db.session.execute(query)
@@ -46,11 +43,8 @@ class ProjectsRepository(ProjectsRepositoryInterface):
 
     async def delete_project(self, project_name: dict) -> None:
         async with DBConnectionHandler() as db:
-            query = (
-                delete(projects)
-                .where(
-                    projects.c.project_name == project_name
-                )
+            query = delete(projects).where(
+                projects.c.project_name == project_name
             )
             await db.session.execute(query)
             await db.session.commit()

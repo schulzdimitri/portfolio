@@ -17,7 +17,8 @@ class MockProjectRepository:
         self.get_project_by_name_att["project_name"] = project_name
         if "projects" in self.get_projects_att:
             return [
-                project for project in self.get_projects_att["projects"]
+                project
+                for project in self.get_projects_att["projects"]
                 if project.get("project_name") == project_name
             ]
         return []

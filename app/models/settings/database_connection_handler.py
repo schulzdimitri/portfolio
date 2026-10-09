@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from app.models.settings.metadata import metadata
 
-
 CONNECTION_STRING = "sqlite+aiosqlite:///schema.db"
 
 engine = create_async_engine(
@@ -11,13 +10,11 @@ engine = create_async_engine(
     echo=False,
     pool_size=2,
     max_overflow=0,
-    pool_timeout=30
+    pool_timeout=30,
 )
 
 async_session = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False
+    bind=engine, class_=AsyncSession, expire_on_commit=False
 )
 
 
@@ -25,7 +22,7 @@ class DBConnectionHandler:
     def __init__(self) -> None:
         self.session: Optional[AsyncSession] = None
 
-    async def __aenter__(self) -> 'DBConnectionHandler':
+    async def __aenter__(self) -> "DBConnectionHandler":
         self.session = async_session()
         return self
 
