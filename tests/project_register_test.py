@@ -17,9 +17,9 @@ async def test_register_project() -> None:
     project_register = ProjectRegister(project_repository)
 
     project_info = {
-        "project_name": "Project Name",
-        "project_description": "Project Description",
-        "project_url": "https://project-url.com",
+        "name": "Project Name",
+        "description": "Project Description",
+        "url": "https://project-url.com",
     }
 
     response = await project_register.register_project(project_info)
@@ -39,9 +39,9 @@ async def test_register_project_invalid_project_name() -> None:
     project_register = ProjectRegister(project_repository)
 
     project_info = {
-        "project_name": "",
-        "project_description": "Project Description",
-        "project_url": "https://project-url.com",
+        "name": "",
+        "description": "Project Description",
+        "url": "https://project-url.com",
     }
 
     with pytest.raises(ValueError) as excinfo:
@@ -60,9 +60,9 @@ async def test_register_project_invalid_project_description() -> None:
     project_register = ProjectRegister(project_repository)
 
     project_info = {
-        "project_name": "Project Name",
-        "project_description": "",
-        "project_url": "https://project-url.com",
+        "name": "Project Name",
+        "description": "",
+        "url": "https://project-url.com",
     }
 
     with pytest.raises(ValueError) as excinfo:
@@ -81,9 +81,9 @@ async def test_register_project_invalid_project_url() -> None:
     project_register = ProjectRegister(project_repository)
 
     project_info = {
-        "project_name": "Project Name",
-        "project_description": "Project Description",
-        "project_url": "",
+        "name": "Project Name",
+        "description": "Project Description",
+        "url": "",
     }
 
     with pytest.raises(ValueError) as excinfo:
@@ -102,9 +102,9 @@ async def test_register_invalid_project_url_not_startwith_http() -> None:
     project_register = ProjectRegister(project_repository)
 
     project_info = {
-        "project_name": "Project Name",
-        "project_description": "Project Description",
-        "project_url": "invalid-url",
+        "name": "Project Name",
+        "description": "Project Description",
+        "url": "invalid-url",
     }
 
     with pytest.raises(ValueError) as excinfo:
