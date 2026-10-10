@@ -16,9 +16,9 @@ class ProjectRegister(ProjectRegisterInterface):
         return self.__format_response(project_info)
 
     def __validate_project_data(self, project_info: dict) -> None:
-        project_name = project_info["project_name"]
-        project_description = project_info["project_description"]
-        project_url = project_info["project_url"]
+        project_name = project_info["name"]
+        project_description = project_info["description"]
+        project_url = project_info["url"]
 
         if not project_name or not project_description or not project_url:
             raise ValueError("Project name, description, and URL are required")

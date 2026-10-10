@@ -35,7 +35,7 @@ class ProjectsRepository(ProjectsRepositoryInterface):
         async with DBConnectionHandler() as db:
             query = (
                 update(projects)
-                .where(projects.c.project_name == project_info["project_name"])
+                .where(projects.c.project_name == project_info["name"])
                 .values(**project_info)
             )
             await db.session.execute(query)
