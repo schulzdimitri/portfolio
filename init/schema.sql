@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    project_name TEXT NOT NULL,
+    name TEXT NOT NULL,
     description TEXT NOT NULL,
     url TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

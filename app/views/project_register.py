@@ -15,7 +15,11 @@ class ProjectRegisterView:
         try:
             project_data = http_request.body
             response = await self.__controller.register_project(project_data)
-            return HttpResponse(status_code=200, body=response)
+            return HttpResponse(status_code=201, body=response)
+        except ValueError as exception:
+            return HttpResponse(
+                status_code=400, body={"error": str(exception)}
+            )
         except Exception as exception:
             return HttpResponse(
                 status_code=500, body={"error": str(exception)}
