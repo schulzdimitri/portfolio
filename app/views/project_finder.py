@@ -11,8 +11,11 @@ class ProjectFinderView:
         self, http_request: HttpRequest
     ) -> HttpResponse:
         try:
-            project_name = http_request.path_params["name"]
-            response = await self.__controller.finder_project(project_name)
+            path_params = http_request.path_params or {}
+            project_name = path_params.get("name")
+            response = await self.__controller.find_project_by_name(
+                project_name
+            )
             return HttpResponse(status_code=200, body=response)
         except Exception as exception:
             return HttpResponse(
@@ -21,7 +24,7 @@ class ProjectFinderView:
 
     async def handle_find_all_projects(self) -> HttpResponse:
         try:
-            response = await self.__controller.finder_all_projects()
+            response = await self.__controller.find_all_projects()
             return HttpResponse(status_code=200, body=response)
         except Exception as exception:
             return HttpResponse(
