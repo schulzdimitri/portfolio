@@ -3,6 +3,7 @@ from app.views.http_types.http_response import HttpResponse
 from app.controllers.interfaces.project_register import (
     ProjectRegisterInterface,
 )
+from app.errors.error_handler import error_handler
 
 
 class ProjectRegisterView:
@@ -16,11 +17,5 @@ class ProjectRegisterView:
             project_data = http_request.body
             response = await self.__controller.register_project(project_data)
             return HttpResponse(status_code=201, body=response)
-        except ValueError as exception:
-            return HttpResponse(
-                status_code=400, body={"error": str(exception)}
-            )
         except Exception as exception:
-            return HttpResponse(
-                status_code=500, body={"error": str(exception)}
-            )
+            error_handler(exception)
