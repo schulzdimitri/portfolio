@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from app.composer.project_finder import project_finder_composer
-from app.composer.project_register import project_register_composer
+from app.main.composer.project_finder import project_finder_composer
+from app.main.composer.project_register import project_register_composer
 from app.views.http_types.http_request import HttpRequest
 from app.validators.project_register import ProjectInput
 
