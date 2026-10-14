@@ -1,6 +1,7 @@
 from app.models.repositories.interfaces.projects import (
     ProjectsRepositoryInterface,
 )
+from app.errors.types.http_bad_request_error import HttpBadRequestError
 from .interfaces.project_register import ProjectRegisterInterface
 
 
@@ -21,18 +22,20 @@ class ProjectRegister(ProjectRegisterInterface):
         project_url = project_info["url"]
 
         if not project_name or not project_description or not project_url:
-            raise ValueError("Project name, description, and URL are required")
+            raise HttpBadRequestError(
+                "Project name, description, and URL are required"
+            )
         if (
             not isinstance(project_name, str)
             or not isinstance(project_description, str)
             or not isinstance(project_url, str)
         ):
-            raise ValueError(
+            raise HttpBadRequestError(
                 "Project name, description, and URL must be strings"
             )
 
         if not project_url.startswith("http"):
-            raise ValueError("Project URL must be a valid URL")
+            raise HttpBadRequestError("Project URL must be a valid URL")
 
     async def __registry_project(self, project_info: dict) -> None:
         await self.__project_repository.insert_project(project_info)
