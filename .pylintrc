@@ -6,6 +6,8 @@ disable=
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
     C0209, # Consider-using-f-string
+    W0719, # broad-exception-raised
+    W0718, # broad-exception-caught
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists

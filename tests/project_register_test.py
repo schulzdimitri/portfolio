@@ -1,5 +1,6 @@
 # pylint:disable=C1803
 import pytest
+from app.errors.types.http_bad_request_error import HttpBadRequestError
 from app.controllers.project_register import ProjectRegister
 
 
@@ -44,7 +45,7 @@ async def test_register_project_invalid_project_name() -> None:
         "url": "https://project-url.com",
     }
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await project_register.register_project(project_info)
 
     assert (
@@ -65,7 +66,7 @@ async def test_register_project_invalid_project_description() -> None:
         "url": "https://project-url.com",
     }
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await project_register.register_project(project_info)
 
     assert (
@@ -86,7 +87,7 @@ async def test_register_project_invalid_project_url() -> None:
         "url": "",
     }
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await project_register.register_project(project_info)
 
     assert (
@@ -107,7 +108,7 @@ async def test_register_invalid_project_url_not_startwith_http() -> None:
         "url": "invalid-url",
     }
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(HttpBadRequestError) as excinfo:
         await project_register.register_project(project_info)
 
     assert str(excinfo.value) == "Project URL must be a valid URL"
