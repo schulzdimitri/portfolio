@@ -1,7 +1,9 @@
 import pytest
+from fastapi import HTTPException
 from app.controllers.interfaces.project_register import (
     ProjectRegisterInterface,
 )
+from app.errors.types.http_bad_request_error import HttpBadRequestError
 from app.views.http_types.http_request import HttpRequest
 from app.views.project_register import ProjectRegisterView
 
@@ -9,16 +11,16 @@ from app.views.project_register import ProjectRegisterView
 class MockProjectRegisterController(ProjectRegisterInterface):
     def __init__(
         self,
-        raise_value_error: bool = False,
+        raise_bad_request: bool = False,
         raise_general_error: bool = False,
     ) -> None:
-        self.raise_value_error = raise_value_error
+        self.raise_bad_request = raise_bad_request
         self.raise_general_error = raise_general_error
         self.registered_data = {}
 
     async def register_project(self, project_info: dict) -> dict:
-        if self.raise_value_error:
-            raise ValueError("Validation error")
+        if self.raise_bad_request:
+            raise HttpBadRequestError("Validation error")
         if self.raise_general_error:
             raise Exception("Internal server error")
         self.registered_data = project_info
@@ -49,15 +51,16 @@ async def test_handle_project_register_success() -> None:
 
 
 @pytest.mark.asyncio
-async def test_handle_project_register_value_error() -> None:
-    controller = MockProjectRegisterController(raise_value_error=True)
+async def test_handle_project_register_bad_request_error() -> None:
+    controller = MockProjectRegisterController(raise_bad_request=True)
     view = ProjectRegisterView(controller)
     request = HttpRequest(body={})
 
-    response = await view.handle_project_register(request)
+    with pytest.raises(HTTPException) as excinfo:
+        await view.handle_project_register(request)
 
-    assert response.status_code == 400
-    assert response.body == {"error": "Validation error"}
+    assert excinfo.value.status_code == 400
+    assert excinfo.value.detail == "Validation error"
 
 
 @pytest.mark.asyncio
@@ -66,7 +69,8 @@ async def test_handle_project_register_internal_error() -> None:
     view = ProjectRegisterView(controller)
     request = HttpRequest(body={})
 
-    response = await view.handle_project_register(request)
+    with pytest.raises(HTTPException) as excinfo:
+        await view.handle_project_register(request)
 
-    assert response.status_code == 500
-    assert response.body == {"error": "Internal server error"}
+    assert excinfo.value.status_code == 500
+    assert excinfo.value.detail == "Internal server error"

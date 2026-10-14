@@ -1,4 +1,5 @@
 import pytest
+from fastapi import HTTPException
 from app.controllers.interfaces.project_finder import ProjectFinderInterface
 from app.views.http_types.http_request import HttpRequest
 from app.views.project_finder import ProjectFinderView
@@ -46,10 +47,11 @@ async def test_handle_find_all_projects_error() -> None:
     controller = MockProjectFinderController(should_raise=True)
     view = ProjectFinderView(controller)
 
-    response = await view.handle_find_all_projects()
+    with pytest.raises(HTTPException) as excinfo:
+        await view.handle_find_all_projects()
 
-    assert response.status_code == 500
-    assert response.body == {"error": "Database error"}
+    assert excinfo.value.status_code == 500
+    assert excinfo.value.detail == "Internal server error"
 
 
 @pytest.mark.asyncio
@@ -71,7 +73,8 @@ async def test_handle_find_project_by_name_error() -> None:
     view = ProjectFinderView(controller)
     request = HttpRequest(path_params={"name": "Portfolio"})
 
-    response = await view.handle_find_project_by_name(request)
+    with pytest.raises(HTTPException) as excinfo:
+        await view.handle_find_project_by_name(request)
 
-    assert response.status_code == 500
-    assert response.body == {"error": "Database error"}
+    assert excinfo.value.status_code == 500
+    assert excinfo.value.detail == "Internal server error"

@@ -68,4 +68,4 @@ def test_create_project_invalid_url(client):
     }
     response = client.post("/projects", json=payload)
     assert response.status_code == 400
-    assert "error" in response.json()
+    assert "detail" in response.json()
