@@ -1,4 +1,4 @@
-const API_URL = window.API_URL || 'http://localhost:3001';
+const API_URL = window.API_URL || (window.location.hostname === 'localhost' && window.location.port !== '3001' ? 'http://localhost:3001' : '');
 
 export const projectApi = {
     async getProjects() {
