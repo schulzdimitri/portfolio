@@ -69,3 +69,15 @@ def test_create_project_invalid_url(client):
     response = client.post("/projects", json=payload)
     assert response.status_code == 400
     assert "detail" in response.json()
+
+
+def test_cors_preflight(client):
+    response = client.options(
+        "/projects",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == "*"
