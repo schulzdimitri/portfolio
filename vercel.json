@@ -4,10 +4,7 @@
     },
     "functions": {
         "main.py": {
-            "includeFiles": [
-                "frontend/**",
-                "init/**"
-            ]
+            "includeFiles": "{frontend/**,init/**}"
         }
     },
     "rewrites": [
