@@ -2,10 +2,15 @@
     "git": {
         "deploymentEnabled": false
     },
+    "functions": {
+        "main.py": {
+            "includeFiles": "frontend/**,init/**"
+        }
+    },
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "main.py"
+            "destination": "/main.py"
         }
     ]
 }
