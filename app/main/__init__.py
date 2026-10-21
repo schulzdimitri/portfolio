@@ -7,7 +7,7 @@ from app.models.settings.database_connection_handler import init_db
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     await init_db()
     yield
 
@@ -29,7 +29,7 @@ allowed_origins = (
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True if allowed_origins != ["*"] else False,
+    allow_credentials=allowed_origins != ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

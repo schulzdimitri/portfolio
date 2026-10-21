@@ -4,6 +4,7 @@ from urllib.parse import urlparse, urlencode, urlunparse
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from app.models.settings.metadata import metadata
+# pylint: disable=unused-import
 import app.models.entities.projects  # noqa: F401
 
 if os.getenv("TESTING") != "1":
