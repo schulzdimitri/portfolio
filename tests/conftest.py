@@ -1,16 +1,15 @@
 import os
-import sqlite3
 import pytest
+from sqlalchemy import create_engine
+from app.models.settings.metadata import metadata
+import app.models.entities.projects  # noqa: F401
+
+os.environ["TESTING"] = "1"
+os.environ.pop("DATABASE_URL", None)
 
 
 @pytest.fixture(autouse=True, scope="session")
 def setup_database():
-    schema_path = os.path.join(
-        os.path.dirname(__file__), "..", "init", "schema.sql"
-    )
-    if os.path.exists(schema_path):
-        with open(schema_path, "r", encoding="utf-8") as schema_file:
-            schema_sql = schema_file.read()
-        conn = sqlite3.connect("schema.db")
-        conn.executescript(schema_sql)
-        conn.close()
+    sync_engine = create_engine("sqlite:///schema.db")
+    metadata.create_all(sync_engine)
+    sync_engine.dispose()

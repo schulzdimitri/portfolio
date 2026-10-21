@@ -1,0 +1,11 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "echo 'Build successful'"
+  },
+  "dependencies": {
+    "@neon/config": "^1.9.3",
+    "@neon/env": "^1.6.4"
+  }
+}

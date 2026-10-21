@@ -1,9 +1,18 @@
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.main.routes.projects import project_routes
+from app.models.settings.database_connection_handler import init_db
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
 allowed_origins = (
