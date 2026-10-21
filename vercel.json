@@ -6,11 +6,5 @@
         "main.py": {
             "includeFiles": "{frontend/**,init/**}"
         }
-    },
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/main.py"
-        }
-    ]
+    }
 }
