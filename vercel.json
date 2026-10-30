@@ -2,10 +2,9 @@
     "git": {
         "deploymentEnabled": false
     },
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "app/main.py"
+    "functions": {
+        "config/wsgi.py": {
+            "includeFiles": "{templates,static}/**"
         }
-    ]
+    }
 }

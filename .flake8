@@ -3,4 +3,5 @@ exclude =
     .venv,
     .git,
     __pycache__,
-    .pytest_cache
+    .pytest_cache,
+    */migrations/*

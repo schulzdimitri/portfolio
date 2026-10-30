@@ -8,3 +8,6 @@
 schema.db
 .vercel
 .env*
+.opencode
+.neon
+node_modules/
