@@ -3,8 +3,8 @@
         "deploymentEnabled": false
     },
     "functions": {
-        "main.py": {
-            "includeFiles": "frontend/**"
+        "config/wsgi.py": {
+            "includeFiles": "{templates,static}/**"
         }
     }
 }

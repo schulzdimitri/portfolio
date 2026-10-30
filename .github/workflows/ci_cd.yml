@@ -23,7 +23,7 @@ jobs:
           flake8 .
       - name: Lint with pylint
         run: |
-          pylint app main.py
+          pylint config portfolio manage.py
 
   tests:
     needs: build
