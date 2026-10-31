@@ -6,12 +6,8 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from portfolio.models import About, Experience, Project
-from portfolio.serializers import (
-    AboutSerializer,
-    ExperienceSerializer,
-    ProjectSerializer,
-)
+from portfolio.models import Experience, Project
+from portfolio.serializers import ExperienceSerializer, ProjectSerializer
 
 
 class FrontendIndexView(View):
@@ -25,49 +21,6 @@ class FrontendIndexView(View):
 class HealthCheckView(APIView):
     def get(self, _request: Request) -> Response:
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
-
-
-class AboutListCreateView(APIView):
-    def get(self, _request: Request) -> Response:
-        try:
-            queryset = About.objects.all()
-            serializer = AboutSerializer(queryset, many=True)
-            return Response(
-                {
-                    "type": "ABOUT",
-                    "count": len(serializer.data),
-                    "attributes": serializer.data,
-                },
-                status=status.HTTP_200_OK,
-            )
-        except Exception:
-            return Response(
-                {"detail": "Internal server error"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-    def post(self, request: Request) -> Response:
-        try:
-            serializer = AboutSerializer(data=request.data)
-            if not serializer.is_valid():
-                return Response(
-                    {"detail": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            serializer.save()
-            return Response(
-                {
-                    "type": "ABOUT",
-                    "count": 1,
-                    "attributes": serializer.data,
-                },
-                status=status.HTTP_201_CREATED,
-            )
-        except Exception:
-            return Response(
-                {"detail": "Internal server error"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
 
 
 class ExperienceListCreateView(APIView):

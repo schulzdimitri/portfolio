@@ -1,6 +1,5 @@
 from django.urls import path
 from portfolio.views import (
-    AboutListCreateView,
     ExperienceListCreateView,
     FrontendIndexView,
     HealthCheckView,
@@ -11,7 +10,6 @@ from portfolio.views import (
 urlpatterns = [
     path("", FrontendIndexView.as_view(), name="frontend-index"),
     path("health", HealthCheckView.as_view(), name="health-check"),
-    path("about", AboutListCreateView.as_view(), name="about-list"),
     path(
         "experiences",
         ExperienceListCreateView.as_view(),
