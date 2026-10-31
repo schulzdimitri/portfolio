@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from portfolio.models import About, Experience, Project
+from portfolio.models import Experience, Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -23,23 +23,6 @@ class ProjectSerializer(serializers.ModelSerializer):
                 "Project URL must be a valid URL"
             )
         return value
-
-
-class AboutSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(
-        max_length=150, required=True, allow_blank=False
-    )
-    summary = serializers.CharField(required=True, allow_blank=False)
-    pillars = serializers.ListField(
-        child=serializers.DictField(), required=True
-    )
-    skills = serializers.ListField(
-        child=serializers.CharField(), required=True
-    )
-
-    class Meta:
-        model = About
-        fields = ["id", "title", "summary", "pillars", "skills"]
 
 
 class ExperienceSerializer(serializers.ModelSerializer):

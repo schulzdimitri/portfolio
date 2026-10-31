@@ -23,10 +23,6 @@ async function fetchJson(path) {
 }
 
 export const portfolioApi = Object.freeze({
-    getAbout() {
-        return fetchJson('/about');
-    },
-
     getExperiences() {
         return fetchJson('/experiences');
     },

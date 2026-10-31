@@ -1,5 +1,4 @@
 import { portfolioApi } from '../api.js';
-import { portfolioData } from '../data/portfolioData.js';
 
 function buildExperienceTimeline(experiences) {
     const timeline = document.createElement('div');
@@ -50,7 +49,7 @@ function buildExperienceTimeline(experiences) {
     return timeline;
 }
 
-export async function renderExperience(container, fallbackExperiences = portfolioData.experiences) {
+export async function renderExperience(container, fallbackExperiences = []) {
     if (!container) return;
 
     try {
