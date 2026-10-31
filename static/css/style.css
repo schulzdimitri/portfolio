@@ -30,34 +30,39 @@ body {
     overflow-x: hidden;
 }
 
-/* Split-Screen Layout & Sticky Hero Sidebar */
-.split-layout {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: minmax(340px, 42%) 1fr;
-    gap: 4rem;
-    padding: 0 3rem;
-    align-items: start;
+/* Fixed Side Brand */
+.nav-brand {
+    position: fixed;
+    top: 1.5rem;
+    left: 2rem;
+    z-index: 100;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.content-column {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
+.nav-brand:hover {
+    transform: scale(1.04);
+}
+
+.nav-brand span {
+    color: var(--accent-color);
 }
 
 /* Hero Section */
 .hero-section {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 3rem 1.5rem;
+    padding: calc(var(--nav-height) + 2rem) 1.5rem 2rem;
     overflow: hidden;
 }
 
@@ -131,26 +136,27 @@ body {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 440px;
+    max-width: 900px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 1.75rem;
-    text-align: center;
+    justify-content: space-between;
+    gap: 3rem;
+    text-align: left;
     animation:
         presentation-reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both,
         presentation-levitate 4s ease-in-out 2.2s infinite alternate;
 }
 
 .presentation-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.75rem;
 }
 
 .presentation-name {
-    font-size: clamp(1.85rem, 3vw, 2.4rem);
+    font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #ffffff;
@@ -159,22 +165,22 @@ body {
 }
 
 .presentation-role {
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
     font-weight: 600;
     color: var(--accent-color);
     letter-spacing: 0.01em;
 }
 
 .presentation-bio {
-    font-size: clamp(0.92rem, 1.5vw, 1.02rem);
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
     color: var(--text-secondary);
     line-height: 1.7;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
 }
 
 .presentation-image-wrapper {
     flex-shrink: 0;
-    width: clamp(180px, 20vw, 250px);
+    width: clamp(240px, 32vw, 380px);
     max-width: 100%;
     aspect-ratio: 380 / 500;
     height: auto;
@@ -203,7 +209,6 @@ body {
 }
 
 .scroll-indicator {
-    display: none;
     position: absolute;
     bottom: 2rem;
     left: 50%;
@@ -586,33 +591,20 @@ body {
 }
 
 /* Responsive Breakpoints */
-@media (max-width: 1024px) {
-    .split-layout {
-        grid-template-columns: 1fr;
-        gap: 0;
-        padding: 0;
-    }
-
-    .hero-section {
-        position: relative;
-        height: auto;
-        min-height: 100vh;
-        min-height: 100dvh;
-        padding: 3.5rem 1.5rem 4rem;
-    }
-
-    .scroll-indicator {
-        display: block;
-    }
-}
-
 @media (max-width: 768px) {
+    .nav-brand {
+        top: 1.25rem;
+        left: 1.25rem;
+    }
+
     .hero-section {
-        padding: 2.5rem 1.25rem 3.5rem;
+        padding: calc(60px + 2.5rem) 1.25rem 2.5rem;
     }
 
     .presentation {
-        gap: 1.5rem;
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 2rem;
     }
 
     .presentation-image-wrapper {
