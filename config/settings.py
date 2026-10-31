@@ -145,5 +145,7 @@ WHITENOISE_USE_FINDERS = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    "UNAUTHENTICATED_USER": None,
+    "DEFAULT_PERMISSION_CLASSES": [
+        "portfolio.permissions.IsAdminUserOrReadOnly",
+    ],
 }

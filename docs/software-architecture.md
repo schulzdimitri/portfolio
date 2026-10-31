@@ -178,9 +178,13 @@ erDiagram
 
 | Method | Endpoint | Description | Success Status | Response Payload |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/` | Serves the portfolio frontend (`frontend/index.html`) | `200 OK` | `text/html` |
+| `GET` | `/` | Serves the portfolio frontend (`templates/index.html`) | `200 OK` | `text/html` |
 | `GET` | `/admin/` | Built-in Django Administration dashboard | `200 OK` / `302` | `text/html` |
 | `GET` | `/health` | Service health check | `200 OK` | `{"status": "ok"}` |
+| `GET` | `/about` | Lists About section data | `200 OK` | `{"type": "ABOUT", "count": N, "attributes": [...]}` |
+| `POST` | `/about` | Creates About section data | `201 Created` | `{"type": "ABOUT", "count": 1, "attributes": {...}}` |
+| `GET` | `/experiences` | Lists all work experience entries | `200 OK` | `{"type": "EXPERIENCE", "count": N, "attributes": [...]}` |
+| `POST` | `/experiences` | Registers a new work experience entry | `201 Created` | `{"type": "EXPERIENCE", "count": 1, "attributes": {...}}` |
 | `GET` | `/projects` | Lists all registered portfolio projects | `200 OK` | `{"type": "PROJECT", "count": N, "attributes": [...]}` |
 | `POST` | `/projects` | Registers a new project | `201 Created` | `{"type": "PROJECT", "count": 1, "attributes": {...}}` |
 | `GET` | `/projects/<project_name>` | Retrieves projects matching `project_name` | `200 OK` | `{"type": "PROJECT", "count": N, "attributes": [...]}` |

@@ -1,4 +1,3 @@
-import { portfolioData } from './data/portfolioData.js';
 import { renderAbout } from './components/about.js';
 import { renderExperience } from './components/experience.js';
 import { renderProjects } from './components/projects.js';
@@ -8,10 +7,10 @@ function initApp() {
     initNavbar();
 
     const aboutContainer = document.getElementById('about-container');
-    renderAbout(aboutContainer, portfolioData.about);
+    renderAbout(aboutContainer);
 
     const experienceContainer = document.getElementById('experience-container');
-    renderExperience(experienceContainer, portfolioData.experiences);
+    renderExperience(experienceContainer);
 
     const projectsContainer = document.getElementById('projects-container');
     renderProjects(projectsContainer);

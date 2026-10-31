@@ -1,6 +1,7 @@
-export function renderExperience(container, experiences) {
-    if (!container || !Array.isArray(experiences)) return;
+import { portfolioApi } from '../api.js';
+import { portfolioData } from '../data/portfolioData.js';
 
+function buildExperienceTimeline(experiences) {
     const timeline = document.createElement('div');
     timeline.className = 'experience-timeline';
 
@@ -35,7 +36,7 @@ export function renderExperience(container, experiences) {
         const techList = document.createElement('ul');
         techList.className = 'experience-tech';
 
-        item.technologies.forEach((tech) => {
+        (item.technologies || []).forEach((tech) => {
             const techTag = document.createElement('li');
             techTag.className = 'tech-pill';
             techTag.textContent = tech;
@@ -46,5 +47,22 @@ export function renderExperience(container, experiences) {
         timeline.appendChild(itemCard);
     });
 
-    container.replaceChildren(timeline);
+    return timeline;
+}
+
+export async function renderExperience(container, fallbackExperiences = portfolioData.experiences) {
+    if (!container) return;
+
+    try {
+        const response = await portfolioApi.getExperiences();
+        const items = response.attributes || response.data || [];
+        const experiences = items.length > 0 ? items : fallbackExperiences;
+        if (Array.isArray(experiences)) {
+            container.replaceChildren(buildExperienceTimeline(experiences));
+        }
+    } catch (error) {
+        if (Array.isArray(fallbackExperiences)) {
+            container.replaceChildren(buildExperienceTimeline(fallbackExperiences));
+        }
+    }
 }
