@@ -5,20 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dimitri's Portfolio | Backend Software Engineer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
-    <nav class="navbar" aria-label="Main Navigation">
-        <div class="nav-container">
-            <a href="#hero" class="nav-brand">Dimitri<span>.</span></a>
-            <ul class="nav-menu">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-            </ul>
-        </div>
-    </nav>
+    <a data-target="hero" class="nav-brand" aria-label="Back to top">Dimitri<span>.</span></a>
 
     <header id="hero" class="hero-section">
         <div class="spotlight">
@@ -30,16 +22,17 @@
                 <h1 class="presentation-name">Dimitri Schulz Amado</h1>
                 <p class="presentation-role">Backend Software Engineer</p>
                 <p class="presentation-bio">
-                    Passionate about building resilient backends, clean APIs, intuitive
-                    and scalable user experiences, and leveraging the power of AI to
-                    enhance business value.
+                    Passionate about building <strong class="text-highlight">resilient backends</strong>,
+                    <strong class="text-highlight">clean APIs</strong>, intuitive and
+                    <strong class="text-highlight">scalable user experiences</strong>, and leveraging the
+                    <strong class="text-highlight">power of AI</strong> to enhance business value.
                 </p>
             </div>
             <div class="presentation-image-wrapper">
                 <img src="/static/assets/images/profile.png" alt="Dimitri Schulz Amado" class="presentation-image">
             </div>
         </div>
-        <a href="#about" class="scroll-indicator" aria-label="Scroll to about section">
+        <a data-target="about" class="scroll-indicator" aria-label="Scroll to about section">
             <span class="scroll-arrow"></span>
         </a>
     </header>
@@ -48,7 +41,107 @@
         <section id="about" class="content-section">
             <div class="container">
                 <h2 class="section-title">About Me</h2>
-                <div id="about-container"></div>
+                <div id="about-container">
+                    <div class="about-wrapper">
+                        <div class="about-text">
+                            <p class="section-description">
+                                I am a <strong class="text-highlight">Software Engineer</strong> focused on
+                                <strong class="text-highlight">Python</strong>,
+                                <strong class="text-highlight">Java/Spring Boot</strong>, and
+                                <strong class="text-highlight">DevOps</strong>.
+                            </p>
+                            <p class="section-description">
+                                I have experience building <strong class="text-highlight">REST APIs</strong>,
+                                <strong class="text-highlight">automating data pipelines</strong>, and integrating
+                                <strong class="text-highlight">scalable systems</strong>. At
+                                <strong class="text-highlight">Inatel</strong>, I engineered Python-based automations
+                                that <strong class="text-highlight">reduced operational data processing time by 70%</strong>,
+                                alongside production dashboards and web applications for engineering teams.
+                            </p>
+                            <p class="section-description">
+                                Beyond core backend and DevOps, I actively integrate
+                                <strong class="text-highlight">AI-assisted development</strong> and
+                                <strong class="text-highlight">agentic workflows</strong> into my daily stack—building
+                                and refining <strong class="text-highlight">skills</strong>,
+                                <strong class="text-highlight">custom agents</strong>, and
+                                <strong class="text-highlight">MCP (Model Context Protocol)</strong> servers to
+                                streamline workflows and accelerate delivery.
+                            </p>
+                        </div>
+                        <div class="pillars-grid">
+                            <article class="pillar-card">
+                                <h3>Clean Architecture</h3>
+                                <p>
+                                    Strict <strong class="text-highlight">layer separation</strong>,
+                                    <strong class="text-highlight">dependency inversion</strong>, and business logic
+                                    decoupled from frameworks.
+                                </p>
+                            </article>
+                            <article class="pillar-card">
+                                <h3>Asynchronous APIs</h3>
+                                <p>
+                                    High-throughput <strong class="text-highlight">RESTful services</strong> using
+                                    <strong class="text-highlight">FastAPI</strong>,
+                                    <strong class="text-highlight">SQLAlchemy async ORM</strong>, and
+                                    <strong class="text-highlight">asyncpg</strong>.
+                                </p>
+                            </article>
+                            <article class="pillar-card">
+                                <h3>Cloud &amp; Reliability</h3>
+                                <p>
+                                    <strong class="text-highlight">Serverless Postgres on Neon</strong>,
+                                    <strong class="text-highlight">PgBouncer pooling</strong>, and automated
+                                    <strong class="text-highlight">GitHub Actions CI/CD</strong>.
+                                </p>
+                            </article>
+                        </div>
+                        <div class="skills-section">
+                            <h3 class="skills-heading">Technologies &amp; Skills</h3>
+                            <ul class="skills-tags">
+                                <li class="skill-tag" title="Python">
+                                    <i class="devicon-python-plain colored" aria-hidden="true"></i>
+                                    <span>Python</span>
+                                </li>
+                                <li class="skill-tag" title="Django">
+                                    <i class="devicon-django-plain" aria-hidden="true"></i>
+                                    <span>Django</span>
+                                </li>
+                                <li class="skill-tag" title="Pytest">
+                                    <i class="devicon-pytest-plain colored" aria-hidden="true"></i>
+                                    <span>Pytest</span>
+                                </li>
+                                <li class="skill-tag" title="Java">
+                                    <i class="devicon-java-plain colored" aria-hidden="true"></i>
+                                    <span>Java</span>
+                                </li>
+                                <li class="skill-tag" title="Spring Boot">
+                                    <i class="devicon-spring-original colored" aria-hidden="true"></i>
+                                    <span>Spring Boot</span>
+                                </li>
+                                <li class="skill-tag" title="PostgreSQL">
+                                    <i class="devicon-postgresql-plain colored" aria-hidden="true"></i>
+                                    <span>PostgreSQL</span>
+                                </li>
+                                <li class="skill-tag" title="Redis">
+                                    <i class="devicon-redis-plain colored" aria-hidden="true"></i>
+                                    <span>Redis</span>
+                                </li>
+                                <li class="skill-tag" title="Docker">
+                                    <i class="devicon-docker-plain colored" aria-hidden="true"></i>
+                                    <span>Docker</span>
+                                </li>
+                                <li class="skill-tag" title="Jenkins">
+                                    <i class="devicon-jenkins-line colored" aria-hidden="true"></i>
+                                    <span>Jenkins</span>
+                                </li>
+                                <li class="skill-tag" title="Git">
+                                    <i class="devicon-git-plain colored" aria-hidden="true"></i>
+                                    <span>Git</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
