@@ -1,5 +1,17 @@
 import { projectApi } from '../api.js';
 
+function sanitizeProjectUrl(rawUrl) {
+    try {
+        const parsed = new URL(rawUrl);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+            return parsed.href;
+        }
+    } catch {
+        return '#';
+    }
+    return '#';
+}
+
 function createProjectCard(project) {
     const card = document.createElement('article');
     card.className = 'project-card';
@@ -11,7 +23,7 @@ function createProjectCard(project) {
     desc.textContent = project.description;
 
     const link = document.createElement('a');
-    link.href = project.url;
+    link.href = sanitizeProjectUrl(project.url);
     link.textContent = 'View Project';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
