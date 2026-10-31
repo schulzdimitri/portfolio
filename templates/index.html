@@ -10,34 +10,34 @@
 </head>
 
 <body>
-    <div class="split-layout">
-        <header id="hero" class="hero-section">
-            <div class="spotlight">
-                <div class="spotlight-emitter"></div>
-                <div class="beam"></div>
-            </div>
-            <div class="presentation">
-                <div class="presentation-image-wrapper">
-                    <img src="/static/assets/images/profile.png" alt="Dimitri Schulz Amado" class="presentation-image">
-                </div>
-                <div class="presentation-content">
-                    <h1 class="presentation-name">Dimitri Schulz Amado</h1>
-                    <p class="presentation-role">Backend Software Engineer</p>
-                    <p class="presentation-bio">
-                        Passionate about building <strong class="text-highlight">resilient backends</strong>,
-                        <strong class="text-highlight">clean APIs</strong>, intuitive and
-                        <strong class="text-highlight">scalable user experiences</strong>, and leveraging the
-                        <strong class="text-highlight">power of AI</strong> to enhance business value.
-                    </p>
-                </div>
-            </div>
-            <a data-target="about" class="scroll-indicator" aria-label="Scroll to about section">
-                <span class="scroll-arrow"></span>
-            </a>
-        </header>
+    <a data-target="hero" class="nav-brand" aria-label="Back to top">Dimitri<span>.</span></a>
 
-        <div class="content-column">
-            <main>
+    <header id="hero" class="hero-section">
+        <div class="spotlight">
+            <div class="spotlight-emitter"></div>
+            <div class="beam"></div>
+        </div>
+        <div class="presentation">
+            <div class="presentation-content">
+                <h1 class="presentation-name">Dimitri Schulz Amado</h1>
+                <p class="presentation-role">Backend Software Engineer</p>
+                <p class="presentation-bio">
+                    Passionate about building <strong class="text-highlight">resilient backends</strong>,
+                    <strong class="text-highlight">clean APIs</strong>, intuitive and
+                    <strong class="text-highlight">scalable user experiences</strong>, and leveraging the
+                    <strong class="text-highlight">power of AI</strong> to enhance business value.
+                </p>
+            </div>
+            <div class="presentation-image-wrapper">
+                <img src="/static/assets/images/profile.png" alt="Dimitri Schulz Amado" class="presentation-image">
+            </div>
+        </div>
+        <a data-target="about" class="scroll-indicator" aria-label="Scroll to about section">
+            <span class="scroll-arrow"></span>
+        </a>
+    </header>
+
+    <main>
         <section id="about" class="content-section">
             <div class="container">
                 <h2 class="section-title">About Me</h2>
@@ -160,17 +160,15 @@
         </section>
     </main>
 
-            <footer class="site-footer">
-                <div class="container footer-content">
-                    <p>&copy; 2026 Dimitri Schulz Amado. All rights reserved.</p>
-                    <div class="footer-links">
-                        <a href="https://github.com/schulzdimitri" target="_blank" rel="noopener noreferrer">GitHub</a>
-                        <a href="mailto:dimitri.s.amado@gmail.com">Contact</a>
-                    </div>
-                </div>
-            </footer>
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 Dimitri Schulz Amado. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/schulzdimitri" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="mailto:dimitri.s.amado@gmail.com">Contact</a>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script type="module" src="/static/js/app.js"></script>
 </body>
