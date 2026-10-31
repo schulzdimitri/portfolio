@@ -1,8 +1,4 @@
-from portfolio.serializers import (
-    AboutSerializer,
-    ExperienceSerializer,
-    ProjectSerializer,
-)
+from portfolio.serializers import ExperienceSerializer, ProjectSerializer
 
 
 def test_project_serializer_valid_with_long_description():
@@ -38,27 +34,6 @@ def test_project_serializer_invalid_url_scheme():
     assert not serializer.is_valid()
     assert "url" in serializer.errors
     assert "Project URL must be a valid URL" in str(serializer.errors["url"])
-
-
-def test_about_serializer_valid():
-    serializer = AboutSerializer(
-        data={
-            "title": "About Me",
-            "summary": "Backend Software Engineer",
-            "pillars": [{"title": "Clean Code", "description": "Testable"}],
-            "skills": ["Python", "Django"],
-        }
-    )
-    assert serializer.is_valid(), serializer.errors
-
-
-def test_about_serializer_invalid_empty_fields():
-    serializer = AboutSerializer(data={"title": "", "summary": ""})
-    assert not serializer.is_valid()
-    assert "title" in serializer.errors
-    assert "summary" in serializer.errors
-    assert "pillars" in serializer.errors
-    assert "skills" in serializer.errors
 
 
 def test_experience_serializer_valid():

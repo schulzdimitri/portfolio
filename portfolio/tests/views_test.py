@@ -28,6 +28,8 @@ def test_frontend_index_serves_portfolio(api_client):
     content = b"".join(response.streaming_content).decode("utf-8")
     assert "Dimitri" in content
     assert "About Me" in content
+    assert "Clean Architecture" in content
+    assert "Technologies &amp; Skills" in content
     assert "Experience" in content
     assert "Projects" in content
 
@@ -53,64 +55,11 @@ def test_health_check_endpoint(api_client):
 
 @pytest.mark.django_db
 def test_unauthenticated_post_requests_are_forbidden(api_client):
-    res_about = api_client.post("/about", data={}, format="json")
     res_exp = api_client.post("/experiences", data={}, format="json")
     res_proj = api_client.post("/projects", data={}, format="json")
 
-    assert res_about.status_code == 403
     assert res_exp.status_code == 403
     assert res_proj.status_code == 403
-
-
-@pytest.mark.django_db
-def test_create_and_get_about(api_client, admin_client):
-    payload = {
-        "title": "About Me",
-        "summary": "Backend Engineer focused on clean architecture.",
-        "pillars": [{"title": "Clean Code", "description": "Modular design"}],
-        "skills": ["Python", "Django", "PostgreSQL"],
-    }
-
-    create_res = admin_client.post("/about", data=payload, format="json")
-    assert create_res.status_code == 201
-    create_body = create_res.json()
-    assert create_body["type"] == "ABOUT"
-    assert create_body["count"] == 1
-    assert create_body["attributes"]["title"] == "About Me"
-
-    list_res = api_client.get("/about")
-    assert list_res.status_code == 200
-    list_body = list_res.json()
-    assert list_body["type"] == "ABOUT"
-    assert list_body["count"] == 1
-    assert list_body["attributes"][0]["skills"] == [
-        "Python",
-        "Django",
-        "PostgreSQL",
-    ]
-
-
-@pytest.mark.django_db
-def test_about_validation_and_error_handling(api_client, admin_client):
-    bad_res = admin_client.post("/about", data={"title": ""}, format="json")
-    assert bad_res.status_code == 400
-    assert "detail" in bad_res.json()
-
-    with patch(
-        "portfolio.views.About.objects.all",
-        side_effect=RuntimeError("DB failure"),
-    ):
-        err_get = api_client.get("/about")
-        assert err_get.status_code == 500
-        assert err_get.json() == {"detail": "Internal server error"}
-
-    with patch(
-        "portfolio.views.AboutSerializer.is_valid",
-        side_effect=RuntimeError("Unexpected failure"),
-    ):
-        err_post = admin_client.post("/about", data={}, format="json")
-        assert err_post.status_code == 500
-        assert err_post.json() == {"detail": "Internal server error"}
 
 
 @pytest.mark.django_db
