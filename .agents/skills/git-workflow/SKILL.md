@@ -1,26 +1,26 @@
 ---
 name: git-workflow
 description: >-
-  Always use this skill whenever starting new feature/fix work without an active
-  feature branch, or when the user asks to commit changes, manage git branches,
-  or prepare a Pull Request.
+  CRITICAL: Always use this skill FIRST before writing or modifying any code for
+  a new feature, bugfix, or refactoring task, and whenever the user asks to
+  commit changes, manage git branches, or prepare a Pull Request.
 ---
 
 # Git Branching, Atomic Commits & PR Workflow Skill
 
-Follow this workflow whenever committing code, managing branches, or preparing changes in this repository.
+Follow this workflow **before starting any code implementation** and whenever committing code or preparing a Pull Request.
 
-## 1. Branch Verification & Creation (From `develop`)
+## 1. Pre-Implementation Branch Creation (From `develop`)
 
-Before staging or committing changes (or at the start of a new task), verify that you are NOT working directly on `develop` or `main`.
+**MANDATORY STEP BEFORE EDITING ANY PROJECT CODE:**
+Whenever the user asks to implement a new feature, fix a bug, or refactor code, your **very first action** (before using `write_file` or `edit_file` on project code) MUST be to ensure you are on a dedicated, unmerged feature branch created from the latest `develop` branch:
 
-1. **Check the active branch**:
-   Run [`ensure_feature_branch.sh`](./scripts/ensure_feature_branch.sh) with the desired branch name (e.g., `feat/short-description`, `fix/issue-name`, `refactor/module-name`, `docs/topic`):
+1. **Run [`ensure_feature_branch.sh`](./scripts/ensure_feature_branch.sh)** with a descriptive branch name (`feat/<short-name>`, `fix/<short-name>`, `refactor/<short-name>`, `docs/<short-name>`):
    ```bash
    bash .agents/skills/git-workflow/scripts/ensure_feature_branch.sh <type>/<branch-name>
    ```
-   - If you are already on a dedicated feature branch (not `develop` or `main`), keep using the current branch.
-   - If you are on `develop` or `main`, the script automatically creates and switches to the new branch based on `develop` (`git checkout -b <branch-name> develop`) while preserving uncommitted working-tree changes.
+   - The script fetches `origin/develop`, fast-forwards local `develop`, and checks if the current branch is `develop`, `main`, or **already merged into `develop`** (e.g., from a previous merged PR).
+   - If you are on `develop`, `main`, or a previously merged branch, it automatically creates and switches to `<type>/<branch-name>` starting from `develop` (`git checkout -b <branch-name> develop`).
 
 ## 2. Granular, Atomic Commits (Conventional Commits)
 
